@@ -1,0 +1,28 @@
+# ============================================================
+# Dependencias del Proyecto API REST con FastAPI
+# ============================================================
+# Instalar con: pip install -r requirements.txt
+
+# ------------------------------------------------------------
+# Framework principal y servidor ASGI
+# ------------------------------------------------------------
+fastapi==0.115.5          # Framework web moderno y de alto rendimiento para APIs REST
+uvicorn[standard]==0.32.1 # Servidor ASGI de alta performance para ejecutar FastAPI
+
+# ------------------------------------------------------------
+# Validación y serialización de datos
+# ------------------------------------------------------------
+pydantic==2.10.3          # Librería de validación de datos basada en tipos de Python
+pydantic-settings==2.6.1  # Extensión de Pydantic para manejo de configuraciones y variables de entorno
+
+# ------------------------------------------------------------
+# Seguridad estándar
+# ------------------------------------------------------------
+python-jose[cryptography]==3.3.0  # Implementación de JSON Web Tokens (JWT) para autenticación
+passlib[bcrypt]==1.7.4            # Librería para el hash seguro de contraseñas (bcrypt)
+python-multipart==0.0.18          # Soporte para formularios y subida de archivos (requerido por FastAPI)
+
+# ------------------------------------------------------------
+# Utilidades de desarrollo
+# ------------------------------------------------------------
+httpx==0.28.1             # Cliente HTTP asíncrono para pruebas de integración
