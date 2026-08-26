@@ -31,6 +31,8 @@ Uso:
 # ------------------------------------------------------------
 from fastapi import FastAPI                    # Clase principal de la aplicacion
 from fastapi.responses import JSONResponse     # Para respuestas JSON personalizadas
+from fastapi.staticfiles import StaticFiles    # Para servir archivos estaticos (HTML, CSS, JS)
+from pathlib import Path                       # Para construir rutas de directorios de forma segura
 
 # ------------------------------------------------------------
 # Importaciones de la libreria estandar de Python
@@ -98,6 +100,22 @@ configurar_cors(app)
 app.add_middleware(CabecerasSeguridad)
 
 
+# ============================================================
+# MONTAJE DE ARCHIVOS ESTATICOS (FRONTEND)
+# ============================================================
+# Se monta el directorio 'frontend/' en la ruta '/frontend'.
+# Esto permite servir el HTML, CSS y JavaScript del frontend
+# desde el mismo servidor FastAPI, eliminando por completo
+# los problemas de CORS: el navegador ve todo en el mismo origen.
+#
+# Acceso: http://localhost:8000/frontend/index.html
+# ============================================================
+_directorio_frontend = Path(__file__).parent / "frontend"
+app.mount(
+    "/frontend",
+    StaticFiles(directory=_directorio_frontend),
+    name="frontend",
+)
 # ============================================================
 # REGISTRO DE ENRUTADORES DE RECURSOS
 # ============================================================

@@ -1,0 +1,928 @@
+/* ============================================================
+   styles.css — Estilos principales de Rio API Frontend
+   ============================================================
+   Paleta de colores: exclusivamente blancos, grises claros y
+   tonos neutros frios (azul-grisaceos muy desaturados).
+   No se usan colores primarios saturados.
+
+   Variables CSS centralizadas para mantener consistencia visual.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   Variables de diseno: paleta neutra y espaciado
+------------------------------------------------------------ */
+:root {
+    /* Colores de fondo */
+    --color-fondo:          #f7f7f8;       /* Fondo de la pagina: gris casi blanco */
+    --color-superficie:     #ffffff;       /* Fondo de tarjetas: blanco puro */
+    --color-superficie-alt: #f0f1f3;       /* Fondo alternativo (hover, inputs) */
+
+    /* Colores de texto */
+    --color-texto-primario:   #18181b;     /* Titulos y texto importante */
+    --color-texto-secundario: #6b7280;     /* Texto de apoyo, etiquetas, pie */
+    --color-texto-terciario:  #9ca3af;     /* Contadores, placeholders */
+
+    /* Bordes y divisores */
+    --color-borde:         #e4e4e7;        /* Borde sutil para tarjetas e inputs */
+    --color-borde-focus:   #a1a1aa;        /* Borde al enfocar un input */
+
+    /* Acento neutro: azul-grisaceo muy desaturado */
+    --color-acento:        #71717a;        /* Para el rio, botones secundarios */
+    --color-acento-claro:  #d4d4d8;        /* Para ondas del rio, bordes hover */
+
+    /* Estados funcionales (neutros, sin colores saturados) */
+    --color-exito:         #52525b;        /* Verde reemplazado por gris oscuro */
+    --color-error:         #3f3f46;        /* Error: gris muy oscuro + borde rojo */
+    --color-error-borde:   #d4d4d8;
+
+    /* Prioridades: diferenciadas solo por opacidad/peso, no por color */
+    --prioridad-alta:      #3f3f46;
+    --prioridad-media:     #71717a;
+    --prioridad-baja:      #a1a1aa;
+
+    /* Animaciones del rio */
+    --rio-color-1: rgba(148, 163, 184, 0.35);  /* Azul-grisaceo traslucido */
+    --rio-color-2: rgba(203, 213, 225, 0.20);  /* Mas claro, segunda onda */
+
+    /* Tipografia */
+    --fuente-principal: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+    /* Espaciado */
+    --espacio-xs:  0.25rem;
+    --espacio-sm:  0.5rem;
+    --espacio-md:  1rem;
+    --espacio-lg:  1.5rem;
+    --espacio-xl:  2rem;
+    --espacio-2xl: 3rem;
+
+    /* Radios de borde */
+    --radio-sm:  4px;
+    --radio-md:  8px;
+    --radio-lg:  12px;
+
+    /* Sombras muy sutiles */
+    --sombra-tarjeta: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --sombra-modal:   0 8px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
+
+    /* Transiciones */
+    --transicion-rapida:  150ms ease;
+    --transicion-normal:  250ms ease;
+    --transicion-lenta:   400ms ease;
+}
+
+
+/* ============================================================
+   RESET Y BASE
+   ============================================================ */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: var(--fuente-principal);
+    background-color: var(--color-fondo);
+    color: var(--color-texto-primario);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+ul {
+    list-style: none;
+}
+
+a {
+    color: var(--color-acento);
+    text-decoration: none;
+    transition: opacity var(--transicion-rapida);
+}
+
+a:hover {
+    opacity: 0.7;
+}
+
+/* Contenedor centrado */
+.contenedor {
+    width: 100%;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 var(--espacio-lg);
+}
+
+
+/* ============================================================
+   CABECERA
+   ============================================================ */
+.cabecera {
+    background-color: var(--color-superficie);
+    border-bottom: 1px solid var(--color-borde);
+    padding: var(--espacio-xl) 0 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.cabecera .contenedor {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--espacio-md);
+    padding-bottom: var(--espacio-lg);
+}
+
+.titulo-app {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--color-texto-primario);
+    line-height: 1.2;
+}
+
+.subtitulo-app {
+    font-size: 0.8125rem;
+    color: var(--color-texto-secundario);
+    font-weight: 400;
+    margin-top: var(--espacio-xs);
+}
+
+/* Indicador de estado de conexion */
+.estado-conexion {
+    display: flex;
+    align-items: center;
+    gap: var(--espacio-sm);
+    font-size: 0.8125rem;
+    color: var(--color-texto-secundario);
+    padding: var(--espacio-xs) var(--espacio-sm);
+    background: var(--color-superficie-alt);
+    border-radius: 999px;
+    border: 1px solid var(--color-borde);
+    white-space: nowrap;
+    margin-top: var(--espacio-xs);
+}
+
+/* Punto de estado que cambia de color segun conexion */
+.estado-punto {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: var(--color-acento-claro);  /* Gris por defecto (conectando) */
+    flex-shrink: 0;
+    transition: background-color var(--transicion-lenta);
+}
+
+/* Estado: conectado */
+.estado-punto.conectado {
+    background-color: #71717a;   /* Gris oscuro: activo */
+    box-shadow: 0 0 0 2px rgba(113, 113, 122, 0.20);
+}
+
+/* Estado: error */
+.estado-punto.error {
+    background-color: #a1a1aa;
+    animation: parpadeo 1.5s ease-in-out infinite;
+}
+
+/* Parpadeo sutil para el indicador de error */
+@keyframes parpadeo {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+}
+
+
+/* ============================================================
+   ANIMACION DEL RIO — Efecto de agua fluyendo
+   ============================================================
+
+   COMO FUNCIONA:
+   1. El SVG contiene DOS trayectos de onda identicos en secuencia.
+   2. El SVG tiene un ancho del 200% del contenedor.
+   3. La animacion "rio-fluir" desplaza el SVG desde 0% hasta -50%
+      de su propio ancho, es decir, exactamente la longitud de una onda.
+   4. Al llegar al -50%, el bucle reinicia en 0% sin discontinuidad,
+      porque la posicion 0% y la -50% son visualmente identicas
+      (segunda copia = primera copia).
+   5. La duracion de 10s y la funcion linear crean el fluir continuo.
+   ============================================================ */
+.rio-contenedor {
+    width: 100%;
+    overflow: hidden;
+    height: 48px;
+    display: flex;
+    align-items: center;
+}
+
+.rio-onda {
+    width: 200%;          /* Doble del contenedor para el bucle sin salto */
+    height: 100%;
+    display: block;
+    animation: rio-fluir 10s linear infinite;  /* Flujo lento y continuo */
+    will-change: transform;  /* Optimizacion: el navegador usa la GPU para esta propiedad */
+}
+
+/* Animacion del fluir: desplazamiento horizontal continuo */
+@keyframes rio-fluir {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }  /* -50% del 200% = -100% del contenedor */
+}
+
+/* Onda principal: mas visible, fluye a velocidad base */
+.onda-principal {
+    stroke: var(--rio-color-1);
+    stroke-width: 1.5;
+}
+
+/* Onda secundaria: mas sutil, desplazada para dar profundidad */
+.onda-secundaria {
+    stroke: var(--rio-color-2);
+    stroke-width: 1;
+}
+
+
+/* ============================================================
+   CONTENIDO PRINCIPAL
+   ============================================================ */
+.principal {
+    padding: var(--espacio-xl) var(--espacio-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--espacio-xl);
+}
+
+
+/* ============================================================
+   TARJETAS
+   ============================================================ */
+.tarjeta {
+    background: var(--color-superficie);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-lg);
+    padding: var(--espacio-xl);
+    box-shadow: var(--sombra-tarjeta);
+}
+
+.tarjeta-titulo {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-texto-primario);
+    margin-bottom: var(--espacio-lg);
+    letter-spacing: -0.01em;
+}
+
+
+/* ============================================================
+   DIVISOR RIO SECUNDARIO — entre secciones
+   ============================================================
+
+   Este divisor usa un gradiente animado con background-position
+   para simular la corriente de agua entre las dos secciones.
+   El gradiente se repite horizontalmente y se desplaza de derecha
+   a izquierda continuamente, evocando el fluir de un rio.
+   ============================================================ */
+.divisor-rio {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 var(--espacio-lg);
+}
+
+.divisor-linea {
+    width: 100%;
+    max-width: 680px;
+    height: 2px;
+    /* Gradiente que forma el patron del rio (claro-oscuro-claro repetido) */
+    background: repeating-linear-gradient(
+        90deg,
+        transparent          0%,
+        var(--rio-color-2)  15%,
+        var(--rio-color-1)  30%,
+        var(--rio-color-2)  45%,
+        transparent         60%
+    );
+    background-size: 300% 100%;   /* Patron mas ancho que el elemento para poder desplazarse */
+    border-radius: 999px;
+    /* La animacion desplaza el patron del gradiente, simulando corriente */
+    animation: divisor-fluir 6s linear infinite;
+}
+
+/* Desplazamiento del gradiente de derecha a izquierda (sensacion de corriente) */
+@keyframes divisor-fluir {
+    0%   { background-position: 100% 0; }
+    100% { background-position: -200% 0; }
+}
+
+
+/* ============================================================
+   FORMULARIOS
+   ============================================================ */
+.campo-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: var(--espacio-xs);
+    margin-bottom: var(--espacio-md);
+    position: relative;
+}
+
+.campo-grupo:last-child {
+    margin-bottom: 0;
+}
+
+.campo-fila {
+    display: flex;
+    gap: var(--espacio-md);
+    margin-bottom: var(--espacio-md);
+}
+
+.campo-grupo-mitad {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.campo-etiqueta {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-texto-secundario);
+    cursor: pointer;
+}
+
+.opcional {
+    font-weight: 400;
+    color: var(--color-texto-terciario);
+}
+
+/* Input, textarea y select comparten estilos base */
+.campo-entrada {
+    width: 100%;
+    padding: var(--espacio-sm) var(--espacio-md);
+    font-family: var(--fuente-principal);
+    font-size: 0.9375rem;
+    color: var(--color-texto-primario);
+    background: var(--color-superficie);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-md);
+    outline: none;
+    transition:
+        border-color var(--transicion-rapida),
+        background-color var(--transicion-rapida),
+        box-shadow var(--transicion-rapida);
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.campo-entrada::placeholder {
+    color: var(--color-texto-terciario);
+}
+
+.campo-entrada:hover {
+    border-color: var(--color-borde-focus);
+}
+
+/* Al enfocar: borde mas oscuro y sombra muy sutil */
+.campo-entrada:focus {
+    border-color: var(--color-acento);
+    box-shadow: 0 0 0 3px rgba(113, 113, 122, 0.10);
+}
+
+.campo-textarea {
+    resize: vertical;
+    min-height: 80px;
+    line-height: 1.5;
+}
+
+.campo-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--espacio-sm) center;
+    padding-right: var(--espacio-2xl);
+    cursor: pointer;
+}
+
+/* Contador de caracteres */
+.campo-contador {
+    font-size: 0.6875rem;
+    color: var(--color-texto-terciario);
+    text-align: right;
+    position: absolute;
+    bottom: calc(var(--espacio-sm) * 0.75);
+    right: var(--espacio-md);
+    pointer-events: none;
+}
+
+/* Checkbox personalizado */
+.campo-checkbox-grupo {
+    justify-content: flex-end;
+}
+
+.campo-etiqueta-checkbox {
+    display: flex;
+    align-items: center;
+    gap: var(--espacio-sm);
+    cursor: pointer;
+    user-select: none;
+    height: 100%;
+    padding-top: 1.5rem; /* Alinea con los otros campos */
+}
+
+.campo-checkbox {
+    /* Oculta el checkbox nativo; se usa el elemento .checkbox-custom */
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.checkbox-custom {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--color-borde-focus);
+    border-radius: var(--radio-sm);
+    background: var(--color-superficie);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition:
+        background var(--transicion-rapida),
+        border-color var(--transicion-rapida);
+}
+
+/* Muestra un check cuando el checkbox nativo esta marcado */
+.campo-checkbox:checked + .checkbox-custom {
+    background: var(--color-acento);
+    border-color: var(--color-acento);
+}
+
+.campo-checkbox:checked + .checkbox-custom::after {
+    content: '';
+    width: 5px;
+    height: 9px;
+    border: 2px solid white;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg) translateY(-1px);
+}
+
+.campo-checkbox:focus + .checkbox-custom {
+    box-shadow: 0 0 0 3px rgba(113, 113, 122, 0.15);
+}
+
+
+/* ============================================================
+   BOTONES
+   ============================================================ */
+.boton-fila {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--espacio-sm);
+    margin-top: var(--espacio-lg);
+}
+
+.boton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--espacio-sm);
+    padding: var(--espacio-sm) var(--espacio-lg);
+    font-family: var(--fuente-principal);
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    border-radius: var(--radio-md);
+    cursor: pointer;
+    transition:
+        background-color var(--transicion-rapida),
+        opacity var(--transicion-rapida),
+        transform var(--transicion-rapida);
+    white-space: nowrap;
+}
+
+.boton:active {
+    transform: translateY(1px);
+}
+
+.boton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Boton primario: gris oscuro sobre blanco */
+.boton-primario {
+    background-color: var(--color-texto-primario);
+    color: #ffffff;
+}
+
+.boton-primario:hover {
+    background-color: #3f3f46;
+}
+
+/* Boton secundario: contorno gris */
+.boton-secundario {
+    background-color: transparent;
+    color: var(--color-texto-secundario);
+    border: 1px solid var(--color-borde);
+}
+
+.boton-secundario:hover {
+    background-color: var(--color-superficie-alt);
+    border-color: var(--color-borde-focus);
+}
+
+/* Boton de peligro (eliminar): texto oscuro, sin color rojo saturado */
+.boton-peligro {
+    background-color: transparent;
+    color: var(--color-texto-terciario);
+    border: 1px solid transparent;
+    padding: var(--espacio-xs) var(--espacio-sm);
+    font-size: 0.8125rem;
+}
+
+.boton-peligro:hover {
+    color: var(--color-texto-secundario);
+    background-color: var(--color-superficie-alt);
+    border-color: var(--color-borde);
+}
+
+/* Spinner dentro del boton durante carga */
+.boton-spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: girar 0.7s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes girar {
+    to { transform: rotate(360deg); }
+}
+
+
+/* ============================================================
+   LISTA DE TAREAS
+   ============================================================ */
+.lista-cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--espacio-lg);
+}
+
+.lista-cabecera .tarjeta-titulo {
+    margin-bottom: 0;
+}
+
+.lista-tareas {
+    display: flex;
+    flex-direction: column;
+    gap: var(--espacio-sm);
+}
+
+/* Estado de carga y lista vacia */
+.estado-lista {
+    text-align: center;
+    color: var(--color-texto-terciario);
+    font-size: 0.875rem;
+    padding: var(--espacio-lg) 0;
+}
+
+.cargando-contenedor {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--espacio-md);
+}
+
+/* Onda de carga animada: replica el efecto del rio a pequeña escala */
+.cargando-onda {
+    width: 48px;
+    height: 4px;
+    border-radius: 999px;
+    background: repeating-linear-gradient(
+        90deg,
+        var(--rio-color-2) 0%,
+        var(--rio-color-1) 50%,
+        var(--rio-color-2) 100%
+    );
+    background-size: 200% 100%;
+    animation: divisor-fluir 1.5s linear infinite;
+}
+
+/* Tarjeta individual de tarea */
+.tarea-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--espacio-md);
+    padding: var(--espacio-md) var(--espacio-lg);
+    background: var(--color-superficie);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-md);
+    transition:
+        border-color var(--transicion-rapida),
+        box-shadow var(--transicion-rapida),
+        opacity var(--transicion-lenta);
+    animation: aparecer var(--transicion-normal) ease forwards;
+}
+
+/* Animacion de aparicion de nuevas tareas */
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Tarea completada: aspecto atenuado */
+.tarea-item.completada {
+    opacity: 0.55;
+}
+
+.tarea-item:hover {
+    border-color: var(--color-borde-focus);
+    box-shadow: var(--sombra-tarjeta);
+}
+
+/* Checkbox de completar en la tarjeta de tarea */
+.tarea-checkbox {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--color-borde-focus);
+    border-radius: 50%;  /* Circular para diferenciarlo del del formulario */
+    background: transparent;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition:
+        background var(--transicion-rapida),
+        border-color var(--transicion-rapida);
+}
+
+.tarea-checkbox:checked {
+    background: var(--color-acento);
+    border-color: var(--color-acento);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6l3 3 5-5' stroke='white' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* Contenido de la tarea */
+.tarea-contenido {
+    flex: 1;
+    min-width: 0;  /* Permite que el texto se trunce correctamente */
+}
+
+.tarea-titulo {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-texto-primario);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color var(--transicion-rapida);
+}
+
+.tarea-item.completada .tarea-titulo {
+    text-decoration: line-through;
+    color: var(--color-texto-terciario);
+}
+
+.tarea-descripcion {
+    font-size: 0.8125rem;
+    color: var(--color-texto-secundario);
+    margin-top: 2px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+/* Meta: prioridad + ID */
+.tarea-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--espacio-sm);
+    margin-top: var(--espacio-xs);
+}
+
+.tarea-prioridad {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 1px var(--espacio-xs);
+    border-radius: var(--radio-sm);
+    border: 1px solid currentColor;
+}
+
+.prioridad-alta  { color: var(--prioridad-alta); }
+.prioridad-media { color: var(--prioridad-media); }
+.prioridad-baja  { color: var(--prioridad-baja); }
+
+.tarea-id {
+    font-size: 0.6875rem;
+    color: var(--color-texto-terciario);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Acciones de la tarea */
+.tarea-acciones {
+    display: flex;
+    align-items: center;
+    gap: var(--espacio-xs);
+    flex-shrink: 0;
+}
+
+
+/* ============================================================
+   MODAL DE EDICION
+   ============================================================ */
+
+/* Fondo oscurecido muy sutil (sin negro saturado) */
+.modal-fondo {
+    position: fixed;
+    inset: 0;
+    background: rgba(24, 24, 27, 0.35);  /* Negro muy transparente */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: var(--espacio-lg);
+    animation: aparecer-fondo var(--transicion-normal) ease;
+}
+
+.modal-fondo[hidden] {
+    display: none;
+}
+
+@keyframes aparecer-fondo {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.modal {
+    background: var(--color-superficie);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-lg);
+    box-shadow: var(--sombra-modal);
+    width: 100%;
+    max-width: 480px;
+    padding: var(--espacio-xl);
+    animation: aparecer-modal var(--transicion-normal) ease;
+}
+
+@keyframes aparecer-modal {
+    from {
+        opacity: 0;
+        transform: translateY(-12px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal-cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--espacio-lg);
+}
+
+.modal-titulo {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.modal-cerrar {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    color: var(--color-texto-terciario);
+    cursor: pointer;
+    padding: var(--espacio-xs);
+    line-height: 1;
+    border-radius: var(--radio-sm);
+    transition: color var(--transicion-rapida), background var(--transicion-rapida);
+}
+
+.modal-cerrar:hover {
+    color: var(--color-texto-primario);
+    background: var(--color-superficie-alt);
+}
+
+
+/* ============================================================
+   NOTIFICACIONES TOAST
+   ============================================================ */
+#zona-toast {
+    position: fixed;
+    bottom: var(--espacio-xl);
+    right: var(--espacio-xl);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    gap: var(--espacio-sm);
+    pointer-events: none;
+}
+
+.toast {
+    background: var(--color-texto-primario);
+    color: white;
+    font-size: 0.875rem;
+    padding: var(--espacio-sm) var(--espacio-lg);
+    border-radius: var(--radio-md);
+    box-shadow: var(--sombra-modal);
+    pointer-events: auto;
+    animation: toast-entrar var(--transicion-normal) ease;
+    max-width: 320px;
+}
+
+.toast.saliendo {
+    animation: toast-salir var(--transicion-normal) ease forwards;
+}
+
+@keyframes toast-entrar {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes toast-salir {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+}
+
+
+/* ============================================================
+   PIE DE PAGINA
+   ============================================================ */
+.pie {
+    margin-top: auto;
+    padding: var(--espacio-xl) 0;
+    border-top: 1px solid var(--color-borde);
+}
+
+.pie .contenedor {
+    text-align: center;
+    font-size: 0.8125rem;
+    color: var(--color-texto-terciario);
+}
+
+
+/* ============================================================
+   RESPONSIVE: pantallas pequeñas
+   ============================================================ */
+@media (max-width: 600px) {
+    .campo-fila {
+        flex-direction: column;
+    }
+
+    .campo-etiqueta-checkbox {
+        padding-top: 0;
+    }
+
+    .tarjeta {
+        padding: var(--espacio-lg);
+    }
+
+    .tarea-item {
+        padding: var(--espacio-sm) var(--espacio-md);
+    }
+
+    #zona-toast {
+        left: var(--espacio-md);
+        right: var(--espacio-md);
+        bottom: var(--espacio-lg);
+    }
+}

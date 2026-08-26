@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rio API — Gestor de Tareas</title>
+    <meta name="description" content="Interfaz minimalista para gestionar tareas mediante la Rio API REST construida con FastAPI." />
+    <!-- Google Fonts: Inter para tipografia limpia y moderna -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/frontend/styles.css" />
+</head>
+<body>
+
+    <!-- ============================================================
+         CABECERA PRINCIPAL
+         Contiene el titulo de la app y la animacion del rio
+    ============================================================ -->
+    <header class="cabecera">
+        <div class="contenedor">
+            <div class="cabecera-texto">
+                <h1 class="titulo-app">Rio API</h1>
+                <p class="subtitulo-app">Gestor de tareas — FastAPI + Python</p>
+            </div>
+            <!-- Indicador de estado de conexion con la API -->
+            <div class="estado-conexion" id="estado-conexion" aria-live="polite">
+                <span class="estado-punto" id="estado-punto"></span>
+                <span class="estado-texto" id="estado-texto">Conectando...</span>
+            </div>
+        </div>
+
+        <!-- Animacion del rio: onda SVG que fluye horizontalmente de forma continua -->
+        <div class="rio-contenedor" aria-hidden="true">
+            <svg class="rio-onda" viewBox="0 0 1440 48" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <!--
+                    Se definen DOS copias identicas del mismo trayecto de onda.
+                    El SVG tiene width=200% en CSS y la animacion lo desplaza -50%,
+                    creando un bucle perfecto sin saltos visibles al reiniciarse.
+                -->
+                <path class="onda-principal" d="
+                    M0,24 C60,10 120,38 180,24 C240,10 300,38 360,24
+                    C420,10 480,38 540,24 C600,10 660,38 720,24
+                    C780,10 840,38 900,24 C960,10 1020,38 1080,24
+                    C1140,10 1200,38 1260,24 C1320,10 1380,38 1440,24
+                    C1500,10 1560,38 1620,24 C1680,10 1740,38 1800,24
+                    C1860,10 1920,38 1980,24 C2040,10 2100,38 2160,24
+                    C2220,10 2280,38 2340,24 C2400,10 2460,38 2520,24
+                    C2580,10 2640,38 2700,24 C2760,10 2820,38 2880,24
+                " fill="none" />
+                <path class="onda-secundaria" d="
+                    M0,28 C80,16 160,40 240,28 C320,16 400,40 480,28
+                    C560,16 640,40 720,28 C800,16 880,40 960,28
+                    C1040,16 1120,40 1200,28 C1280,16 1360,40 1440,28
+                    C1520,16 1600,40 1680,28 C1760,16 1840,40 1920,28
+                    C2000,16 2080,40 2160,28 C2240,16 2320,40 2400,28
+                    C2480,16 2560,40 2640,28 C2720,16 2800,40 2880,28
+                " fill="none" />
+            </svg>
+        </div>
+    </header>
+
+    <!-- ============================================================
+         CONTENIDO PRINCIPAL
+    ============================================================ -->
+    <main class="contenedor principal">
+
+        <!-- Notificaciones flotantes (toast) -->
+        <div id="zona-toast" aria-live="assertive" aria-atomic="true"></div>
+
+        <!-- ----------------------------------------------------------
+             SECCION: Formulario para crear nueva tarea
+        ---------------------------------------------------------- -->
+        <section class="tarjeta" id="seccion-crear">
+            <h2 class="tarjeta-titulo">Nueva tarea</h2>
+
+            <form id="formulario-crear" novalidate>
+                <div class="campo-grupo">
+                    <label class="campo-etiqueta" for="campo-titulo">Titulo</label>
+                    <input
+                        type="text"
+                        id="campo-titulo"
+                        class="campo-entrada"
+                        placeholder="Describe la tarea brevemente..."
+                        maxlength="100"
+                        autocomplete="off"
+                        required
+                    />
+                    <span class="campo-contador" id="contador-titulo">0 / 100</span>
+                </div>
+
+                <div class="campo-grupo">
+                    <label class="campo-etiqueta" for="campo-descripcion">Descripcion <span class="opcional">(opcional)</span></label>
+                    <textarea
+                        id="campo-descripcion"
+                        class="campo-entrada campo-textarea"
+                        placeholder="Añade mas detalles si lo necesitas..."
+                        maxlength="500"
+                        rows="3"
+                    ></textarea>
+                    <span class="campo-contador" id="contador-descripcion">0 / 500</span>
+                </div>
+
+                <div class="campo-fila">
+                    <div class="campo-grupo campo-grupo-mitad">
+                        <label class="campo-etiqueta" for="campo-prioridad">Prioridad</label>
+                        <select id="campo-prioridad" class="campo-entrada campo-select">
+                            <option value="baja">Baja</option>
+                            <option value="media" selected>Media</option>
+                            <option value="alta">Alta</option>
+                        </select>
+                    </div>
+
+                    <div class="campo-grupo campo-grupo-mitad campo-checkbox-grupo">
+                        <label class="campo-etiqueta campo-etiqueta-checkbox" for="campo-completada">
+                            <input type="checkbox" id="campo-completada" class="campo-checkbox" />
+                            <span class="checkbox-custom"></span>
+                            Marcar como completada
+                        </label>
+                    </div>
+                </div>
+
+                <div class="boton-fila">
+                    <button type="submit" class="boton boton-primario" id="boton-crear">
+                        <span class="boton-texto">Crear tarea</span>
+                        <span class="boton-spinner" hidden aria-hidden="true"></span>
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Divisor rio: segunda onda animada que separa visualmente las secciones -->
+        <div class="divisor-rio" aria-hidden="true">
+            <div class="divisor-linea"></div>
+        </div>
+
+        <!-- ----------------------------------------------------------
+             SECCION: Lista de tareas
+        ---------------------------------------------------------- -->
+        <section class="tarjeta" id="seccion-lista">
+            <div class="lista-cabecera">
+                <h2 class="tarjeta-titulo">Tareas</h2>
+                <button class="boton boton-secundario" id="boton-recargar" title="Recargar lista de tareas">
+                    Recargar
+                </button>
+            </div>
+
+            <!-- Estado de carga inicial -->
+            <div id="estado-lista" class="estado-lista">
+                <div class="cargando-contenedor" id="cargando">
+                    <div class="cargando-onda" aria-label="Cargando tareas..."></div>
+                    <p>Cargando tareas...</p>
+                </div>
+                <p id="lista-vacia" hidden>No hay tareas todavia. Crea la primera.</p>
+            </div>
+
+            <!-- Contenedor donde se insertan las tarjetas de tareas dinamicamente -->
+            <ul class="lista-tareas" id="lista-tareas" aria-label="Lista de tareas"></ul>
+        </section>
+
+    </main>
+
+    <!-- ============================================================
+         MODAL DE EDICION
+         Se muestra al pulsar "Editar" en una tarea existente
+    ============================================================ -->
+    <div class="modal-fondo" id="modal-fondo" hidden aria-modal="true" role="dialog" aria-labelledby="modal-titulo">
+        <div class="modal">
+            <div class="modal-cabecera">
+                <h3 class="modal-titulo" id="modal-titulo">Editar tarea</h3>
+                <button class="modal-cerrar" id="modal-cerrar" aria-label="Cerrar modal">&times;</button>
+            </div>
+
+            <form id="formulario-editar" novalidate>
+                <input type="hidden" id="editar-id" />
+
+                <div class="campo-grupo">
+                    <label class="campo-etiqueta" for="editar-titulo">Titulo</label>
+                    <input type="text" id="editar-titulo" class="campo-entrada" maxlength="100" required />
+                </div>
+
+                <div class="campo-grupo">
+                    <label class="campo-etiqueta" for="editar-descripcion">Descripcion <span class="opcional">(opcional)</span></label>
+                    <textarea id="editar-descripcion" class="campo-entrada campo-textarea" maxlength="500" rows="3"></textarea>
+                </div>
+
+                <div class="campo-fila">
+                    <div class="campo-grupo campo-grupo-mitad">
+                        <label class="campo-etiqueta" for="editar-prioridad">Prioridad</label>
+                        <select id="editar-prioridad" class="campo-entrada campo-select">
+                            <option value="baja">Baja</option>
+                            <option value="media">Media</option>
+                            <option value="alta">Alta</option>
+                        </select>
+                    </div>
+
+                    <div class="campo-grupo campo-grupo-mitad campo-checkbox-grupo">
+                        <label class="campo-etiqueta campo-etiqueta-checkbox" for="editar-completada">
+                            <input type="checkbox" id="editar-completada" class="campo-checkbox" />
+                            <span class="checkbox-custom"></span>
+                            Completada
+                        </label>
+                    </div>
+                </div>
+
+                <div class="boton-fila">
+                    <button type="button" class="boton boton-secundario" id="modal-cancelar">Cancelar</button>
+                    <button type="submit" class="boton boton-primario" id="boton-guardar">
+                        <span class="boton-texto">Guardar cambios</span>
+                        <span class="boton-spinner" hidden aria-hidden="true"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Pie de pagina minimalista -->
+    <footer class="pie">
+        <div class="contenedor">
+            <p>Rio API &mdash; <a href="/docs" target="_blank" rel="noopener">Documentacion Swagger</a> &mdash; <a href="/redoc" target="_blank" rel="noopener">ReDoc</a></p>
+        </div>
+    </footer>
+
+    <script src="/frontend/app.js"></script>
+</body>
+</html>

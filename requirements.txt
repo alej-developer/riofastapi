@@ -8,6 +8,7 @@
 # ------------------------------------------------------------
 fastapi==0.115.5          # Framework web moderno y de alto rendimiento para APIs REST
 uvicorn[standard]==0.32.1 # Servidor ASGI de alta performance para ejecutar FastAPI
+aiofiles==24.1.0          # Soporte asincrono para lectura de archivos estaticos (StaticFiles)
 
 # ------------------------------------------------------------
 # Validación y serialización de datos
