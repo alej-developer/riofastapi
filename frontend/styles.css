@@ -302,16 +302,23 @@ a:hover {
     width: 100%;
     max-width: 680px;
     height: 2px;
-    /* Gradiente que forma el patron del rio (claro-oscuro-claro repetido) */
-    background: repeating-linear-gradient(
+    /* Linea solida continua: el gradiente nunca toca transparent,
+       por lo que no hay huecos ni interrupciones en ningun punto.
+       El efecto de rio se consigue con un brillo (highlight) que
+       recorre la linea de izquierda a derecha de forma continua.
+       El patron tiene 5 paradas todas opacas:
+         claro -> oscuro -> muy oscuro -> oscuro -> claro
+       Al desplazarse el background-position, ese pico de brillo
+       viaja horizontalmente simulando la corriente del agua. */
+    background: linear-gradient(
         90deg,
-        transparent          0%,
-        var(--rio-color-2)  15%,
-        var(--rio-color-1)  30%,
-        var(--rio-color-2)  45%,
-        transparent         60%
+        var(--rio-color-2),
+        var(--rio-color-1),
+        rgba(100, 116, 139, 0.55),
+        var(--rio-color-1),
+        var(--rio-color-2)
     );
-    background-size: 300% 100%;   /* Patron mas ancho que el elemento para poder desplazarse */
+    background-size: 300% 100%;   /* Mas ancho que el elemento para que el brillo viaje */
     border-radius: 999px;
     /* La animacion desplaza el patron del gradiente, simulando corriente */
     animation: divisor-fluir 6s linear infinite;
