@@ -23,6 +23,11 @@ passlib[bcrypt]==1.7.4            # Librería para el hash seguro de contraseña
 python-multipart==0.0.18          # Soporte para formularios y subida de archivos (requerido por FastAPI)
 
 # ------------------------------------------------------------
+# Control de tasa de peticiones (Rate Limiting)
+# ------------------------------------------------------------
+slowapi==0.1.9            # Librería de rate limiting para FastAPI/Starlette basada en limits
+
+# ------------------------------------------------------------
 # Utilidades de desarrollo
 # ------------------------------------------------------------
 httpx==0.28.1             # Cliente HTTP asíncrono para pruebas de integración

@@ -2,113 +2,180 @@
 ============================================================
 main.py - Punto de entrada principal de la API REST
 ============================================================
-Descripción:
-    Este archivo inicializa la aplicación FastAPI, configura
-    los metadatos del proyecto (título, versión, descripción)
-    y registra todos los endpoints de la API.
+Descripcion:
+    Este archivo inicializa la aplicacion FastAPI y registra, en orden
+    correcto, todos los middlewares de ciberseguridad y los enrutadores
+    de recursos.
 
-    Actualmente expone un endpoint de verificación ("Hola Mundo")
-    para comprobar que el servidor está funcionando correctamente.
+    ORDEN DE REGISTRO DE MIDDLEWARES:
+    El orden importa: los middlewares se aplican de afuera hacia adentro
+    en la cadena de peticion, y de adentro hacia afuera en la respuesta.
+    El orden correcto para maxima seguridad es:
+
+        1. Rate Limiting       <- Se aplica primero para rechazar trafico
+                                  excesivo antes de procesar nada.
+        2. CORS                <- Valida el origen de la peticion.
+        3. Cabeceras de Seguridad <- Añade protecciones a la respuesta.
 
 Uso:
-    Ejecutar en modo desarrollo con:
+    Modo desarrollo (con recarga automatica):
         uvicorn main:app --reload
 
-    Ejecutar en modo producción con:
-        uvicorn main:app --host 0.0.0.0 --port 8000
+    Modo produccion:
+        uvicorn main:app --host 0.0.0.0 --port 8000 --workers 4
 ============================================================
 """
 
 # ------------------------------------------------------------
 # Importaciones del framework FastAPI
 # ------------------------------------------------------------
-from fastapi import FastAPI          # Clase principal para crear la aplicación
-from fastapi.responses import JSONResponse  # Respuesta JSON personalizable
+from fastapi import FastAPI                    # Clase principal de la aplicacion
+from fastapi.responses import JSONResponse     # Para respuestas JSON personalizadas
 
 # ------------------------------------------------------------
-# Importaciones de la librería estándar de Python
+# Importaciones de la libreria estandar de Python
 # ------------------------------------------------------------
-from datetime import datetime        # Para registrar la fecha y hora del servidor
+from datetime import datetime, timezone        # Para timestamps en UTC
+
+# ------------------------------------------------------------
+# Importaciones de los modulos de ciberseguridad del proyecto
+# ------------------------------------------------------------
+from app.core.seguridad import (
+    CabecerasSeguridad,          # Middleware de cabeceras HTTP de seguridad
+    configurar_cors,             # Funcion para registrar el middleware CORS
+    configurar_rate_limiting,    # Funcion para registrar el rate limiter
+)
+
+# ------------------------------------------------------------
+# Importaciones de los enrutadores de recursos
+# ------------------------------------------------------------
+from app.routers import tareas  # Enrutador CRUD para el recurso Tarea
+
 
 # ============================================================
-# Creación de la instancia principal de la aplicación FastAPI
+# Creacion de la instancia principal de la aplicacion FastAPI
 # ============================================================
-# Se configuran los metadatos que aparecerán en la documentación
-# automática generada por FastAPI (disponible en /docs y /redoc)
 app = FastAPI(
-    title="Río API",                               # Nombre de la API en la documentación
-    description="API REST construida con FastAPI y Python. "
-                "Proyecto base con configuración inicial.",  # Descripción visible en /docs
-    version="0.1.0",                               # Versión semántica del proyecto
-    docs_url="/docs",                              # Ruta para la documentación Swagger UI
-    redoc_url="/redoc",                            # Ruta para la documentación ReDoc
+    title="Rio API",
+    description=(
+        "API REST construida con FastAPI y Python. "
+        "Incluye CRUD de tareas con validacion estricta de datos (Pydantic), "
+        "CORS restrictivo, rate limiting por IP y cabeceras de seguridad HTTP."
+    ),
+    version="0.2.0",
+    docs_url="/docs",
+    redoc_url="/redoc",
     contact={
-        "name": "Equipo de Desarrollo",           # Nombre del responsable del proyecto
-        "url": "https://github.com/alej-developer/riofastapi",  # Repositorio del proyecto
+        "name": "Equipo de Desarrollo",
+        "url": "https://github.com/alej-developer/riofastapi",
     },
 )
 
 
 # ============================================================
-# Endpoint raíz: Verificación de estado del servidor
+# REGISTRO DE MIDDLEWARES DE CIBERSEGURIDAD
+# ============================================================
+# IMPORTANTE: El orden de registro define el orden de ejecucion.
+# Los middlewares añadidos ULTIMO se ejecutan PRIMERO en la peticion
+# entrante (estructura LIFO - Last In, First Out).
+# El orden definido aqui sigue las mejores practicas de seguridad.
+
+# Paso 1: Configurar el rate limiting
+# Se registra primero porque debe ser el PRIMER filtro que procese
+# la peticion: rechaza trafico excesivo antes de hacer cualquier
+# otro trabajo, minimizando el consumo de recursos bajo ataque.
+configurar_rate_limiting(app)
+
+# Paso 2: Configurar CORS
+# Se aplica despues del rate limiting. Valida que el origen de la
+# peticion sea uno de los dominios autorizados en la lista blanca.
+configurar_cors(app)
+
+# Paso 3: Añadir el middleware de cabeceras de seguridad HTTP
+# Se aplica a todas las respuestas salientes. Al registrarse despues
+# de CORS, se ejecuta "mas adentro" en la cadena y por tanto tiene
+# la ultima oportunidad de modificar la respuesta antes de enviarla.
+app.add_middleware(CabecerasSeguridad)
+
+
+# ============================================================
+# REGISTRO DE ENRUTADORES DE RECURSOS
+# ============================================================
+# Se incluye el enrutador de tareas con el prefijo /api/v1
+# para versionado de la API (buena practica de diseno REST).
+app.include_router(
+    tareas.router,
+    prefix="/api/v1",  # Prefijo de version: /api/v1/tareas
+)
+
+
+# ============================================================
+# ENDPOINT: Verificacion de estado del servidor (Hola Mundo)
 # ============================================================
 @app.get(
     "/",
-    summary="Verificación de conexión",          # Título del endpoint en la documentación
-    description="Endpoint de bienvenida. Verifica que el servidor "
-                "esté activo y respondiendo correctamente.",
-    tags=["Estado del Servidor"],                 # Categoría en la documentación Swagger
+    summary="Verificacion de conexion",
+    description=(
+        "Endpoint de bienvenida. Verifica que el servidor este activo "
+        "y muestra informacion basica de la API."
+    ),
+    tags=["Estado del Servidor"],
 )
 async def hola_mundo() -> dict:
     """
-    Endpoint de bienvenida (Hola Mundo).
+    Endpoint raiz de verificacion de conexion.
 
-    Retorna un mensaje de bienvenida junto con la versión de la API
-    y la fecha/hora actual del servidor. Útil para comprobar que
-    la conexión con el servidor funciona correctamente.
+    Devuelve un mensaje de bienvenida, la version de la API y
+    la fecha/hora actual del servidor en formato ISO 8601 UTC.
 
     Returns:
-        dict: Un diccionario con:
-            - mensaje (str): Saludo de bienvenida.
-            - version (str): Versión actual de la API.
-            - estado (str): Estado del servidor.
-            - timestamp (str): Fecha y hora actual del servidor en formato ISO 8601.
+        dict: Informacion basica del estado del servidor.
     """
-    # Se construye la respuesta con información básica del servidor
     return {
-        "mensaje": "¡Hola Mundo! Bienvenido a la API REST con FastAPI 🚀",
-        "version": app.version,           # Versión definida al crear la instancia de FastAPI
-        "estado": "activo",               # Indicador de que el servidor está funcionando
-        "timestamp": datetime.utcnow().isoformat() + "Z",  # Fecha y hora UTC en formato ISO 8601
+        "mensaje": "Bienvenido a la Rio API. El servidor esta activo.",
+        "version": app.version,
+        "estado": "activo",
+        # datetime.now(timezone.utc) es la forma correcta de obtener UTC en Python moderno.
+        # datetime.utcnow() esta en desuso (deprecated) desde Python 3.12.
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "documentacion": {
+            "swagger": "/docs",
+            "redoc": "/redoc",
+        },
+        "recursos": {
+            "tareas": "/api/v1/tareas",
+        },
     }
 
 
 # ============================================================
-# Endpoint de salud: Comprobación rápida para sistemas externos
+# ENDPOINT: Comprobacion de salud del servidor (Health Check)
 # ============================================================
 @app.get(
     "/health",
     summary="Estado de salud de la API",
-    description="Endpoint estándar para comprobaciones de salud (health check). "
-                "Usado habitualmente por orquestadores como Docker o Kubernetes.",
+    description=(
+        "Endpoint estandar de health check para orquestadores como "
+        "Docker, Kubernetes o balanceadores de carga."
+    ),
     tags=["Estado del Servidor"],
 )
 async def health_check() -> JSONResponse:
     """
-    Endpoint de comprobación de salud (Health Check).
+    Endpoint de comprobacion de salud.
 
-    Este endpoint es una práctica estándar en APIs de producción.
-    Permite que servicios externos (balanceadores de carga, Docker,
-    Kubernetes) verifiquen si la aplicación está operativa.
+    Es una practica estandar en APIs de produccion. Permite que
+    servicios externos (Docker, Kubernetes, load balancers) verifiquen
+    si la aplicacion esta operativa y lista para recibir trafico.
 
     Returns:
-        JSONResponse: Respuesta HTTP 200 con estado "saludable".
+        JSONResponse: HTTP 200 con estado "saludable".
     """
-    # Se retorna una respuesta con código HTTP 200 (OK) indicando que el servicio está sano
     return JSONResponse(
         status_code=200,
         content={
-            "estado": "saludable",        # Estado del servicio
-            "detalle": "El servidor está operativo y listo para recibir solicitudes.",
+            "estado": "saludable",
+            "version": app.version,
+            "detalle": "El servidor esta operativo y listo para recibir solicitudes.",
         },
     )
