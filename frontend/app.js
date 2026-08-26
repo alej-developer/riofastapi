@@ -200,17 +200,17 @@ const ui = {
      * Al cachearlas al inicio, se evitan multiples querySelector()
      * que son costosos si se llaman en bucles o eventos frecuentes. */
     elementos: {
-        listaContenedor:  () => document.getElementById('lista-tareas'),
-        estadoCargando:   () => document.getElementById('cargando'),
-        estadoVacio:      () => document.getElementById('lista-vacia'),
-        formularioCrear:  () => document.getElementById('formulario-crear'),
+        listaContenedor: () => document.getElementById('lista-tareas'),
+        estadoCargando: () => document.getElementById('cargando'),
+        estadoVacio: () => document.getElementById('lista-vacia'),
+        formularioCrear: () => document.getElementById('formulario-crear'),
         formularioEditar: () => document.getElementById('formulario-editar'),
-        modalFondo:       () => document.getElementById('modal-fondo'),
-        zonaToast:        () => document.getElementById('zona-toast'),
-        estadoPunto:      () => document.getElementById('estado-punto'),
-        estadoTexto:      () => document.getElementById('estado-texto'),
-        contadorTitulo:   () => document.getElementById('contador-titulo'),
-        contadorDesc:     () => document.getElementById('contador-descripcion'),
+        modalFondo: () => document.getElementById('modal-fondo'),
+        zonaToast: () => document.getElementById('zona-toast'),
+        estadoPunto: () => document.getElementById('estado-punto'),
+        estadoTexto: () => document.getElementById('estado-texto'),
+        contadorTitulo: () => document.getElementById('contador-titulo'),
+        contadorDesc: () => document.getElementById('contador-descripcion'),
     },
 
     /**
@@ -227,9 +227,9 @@ const ui = {
 
         /* Se aplica la clase y el texto correspondiente al nuevo estado */
         const configuraciones = {
-            conectando: { clase: '',        label: 'Conectando...' },
-            activo:     { clase: 'conectado', label: 'API activa' },
-            error:      { clase: 'error',    label: 'Sin conexion' },
+            conectando: { clase: '', label: 'Conectando...' },
+            activo: { clase: 'conectado', label: 'API activa' },
+            error: { clase: 'error', label: 'Sin conexion' },
         };
 
         const config = configuraciones[estado] || configuraciones.conectando;
@@ -244,14 +244,14 @@ const ui = {
      */
     mostrarEstadoLista(estado) {
         const cargando = this.elementos.estadoCargando();
-        const vacio    = this.elementos.estadoVacio();
+        const vacio = this.elementos.estadoVacio();
 
         /* Ambos ocultos por defecto */
         cargando.hidden = true;
-        vacio.hidden    = true;
+        vacio.hidden = true;
 
         if (estado === 'cargando') cargando.hidden = false;
-        if (estado === 'vacio')    vacio.hidden    = false;
+        if (estado === 'vacio') vacio.hidden = false;
     },
 
     /**
@@ -321,8 +321,8 @@ const ui = {
             <div class="tarea-contenido">
                 <p class="tarea-titulo">${this._escaparHTML(tarea.titulo)}</p>
                 ${tarea.descripcion
-                    ? `<p class="tarea-descripcion">${this._escaparHTML(tarea.descripcion)}</p>`
-                    : ''}
+                ? `<p class="tarea-descripcion">${this._escaparHTML(tarea.descripcion)}</p>`
+                : ''}
                 <div class="tarea-meta">
                     <span class="tarea-prioridad prioridad-${tarea.prioridad}">${tarea.prioridad}</span>
                     <span class="tarea-id">#${tarea.id} &middot; ${fechaFormateada}</span>
@@ -360,10 +360,10 @@ const ui = {
      */
     abrirModalEdicion(tarea) {
         /* Se rellenan los campos del formulario de edicion con los datos actuales */
-        document.getElementById('editar-id').value          = tarea.id;
-        document.getElementById('editar-titulo').value      = tarea.titulo;
+        document.getElementById('editar-id').value = tarea.id;
+        document.getElementById('editar-titulo').value = tarea.titulo;
         document.getElementById('editar-descripcion').value = tarea.descripcion || '';
-        document.getElementById('editar-prioridad').value   = tarea.prioridad;
+        document.getElementById('editar-prioridad').value = tarea.prioridad;
         document.getElementById('editar-completada').checked = tarea.completada;
 
         /* Se hace visible el modal quitando el atributo hidden */
@@ -387,9 +387,9 @@ const ui = {
      * @param {number} duracion  - Duracion en ms antes de desaparecer.
      */
     mostrarToast(mensaje, duracion = DURACION_TOAST) {
-        const zona  = this.elementos.zonaToast();
+        const zona = this.elementos.zonaToast();
         const toast = document.createElement('div');
-        toast.className   = 'toast';
+        toast.className = 'toast';
         toast.textContent = mensaje;
         toast.setAttribute('role', 'status');
 
@@ -415,12 +415,12 @@ const ui = {
      * @param {boolean}     cargando - true para activar carga, false para restaurar.
      */
     setBotonCargando(boton, cargando) {
-        const texto   = boton.querySelector('.boton-texto');
+        const texto = boton.querySelector('.boton-texto');
         const spinner = boton.querySelector('.boton-spinner');
 
-        boton.disabled    = cargando;
-        texto.hidden      = cargando;
-        spinner.hidden    = !cargando;
+        boton.disabled = cargando;
+        texto.hidden = cargando;
+        spinner.hidden = !cargando;
     },
 };
 
@@ -449,7 +449,7 @@ const eventos = {
      */
     _registrarFormularioCrear() {
         const formulario = ui.elementos.formularioCrear();
-        const boton      = document.getElementById('boton-crear');
+        const boton = document.getElementById('boton-crear');
 
         formulario.addEventListener('submit', async (evento) => {
             /* Previene el envio HTML nativo del formulario (recarga de pagina) */
@@ -463,10 +463,10 @@ const eventos = {
 
             /* Se recogen los valores de los campos */
             const datos = {
-                titulo:      document.getElementById('campo-titulo').value.trim(),
+                titulo: document.getElementById('campo-titulo').value.trim(),
                 descripcion: document.getElementById('campo-descripcion').value.trim() || null,
-                prioridad:   document.getElementById('campo-prioridad').value,
-                completada:  document.getElementById('campo-completada').checked,
+                prioridad: document.getElementById('campo-prioridad').value,
+                completada: document.getElementById('campo-completada').checked,
             };
 
             /* Bloquea el boton durante la peticion para prevenir doble envio */
@@ -479,7 +479,7 @@ const eventos = {
                 /* Limpia el formulario tras el exito */
                 formulario.reset();
                 /* Resetea los contadores de caracteres manualmente */
-                document.getElementById('contador-titulo').textContent    = '0 / 100';
+                document.getElementById('contador-titulo').textContent = '0 / 100';
                 document.getElementById('contador-descripcion').textContent = '0 / 500';
 
                 ui.mostrarToast('Tarea creada correctamente.');
@@ -502,7 +502,7 @@ const eventos = {
      */
     _registrarFormularioEditar() {
         const formulario = ui.elementos.formularioEditar();
-        const boton      = document.getElementById('boton-guardar');
+        const boton = document.getElementById('boton-guardar');
 
         formulario.addEventListener('submit', async (evento) => {
             evento.preventDefault();
@@ -516,10 +516,10 @@ const eventos = {
             const id = parseInt(document.getElementById('editar-id').value, 10);
 
             const cambios = {
-                titulo:      document.getElementById('editar-titulo').value.trim(),
+                titulo: document.getElementById('editar-titulo').value.trim(),
                 descripcion: document.getElementById('editar-descripcion').value.trim() || null,
-                prioridad:   document.getElementById('editar-prioridad').value,
-                completada:  document.getElementById('editar-completada').checked,
+                prioridad: document.getElementById('editar-prioridad').value,
+                completada: document.getElementById('editar-completada').checked,
             };
 
             ui.setBotonCargando(boton, true);
@@ -552,13 +552,13 @@ const eventos = {
         const lista = ui.elementos.listaContenedor();
 
         lista.addEventListener('click', async (evento) => {
-            const boton    = evento.target.closest('button');
+            const boton = evento.target.closest('button');
             const checkbox = evento.target.closest('.tarea-checkbox');
 
             /* --- Accion: Toggle completada (click en checkbox circular) --- */
             if (checkbox) {
                 const item = checkbox.closest('.tarea-item');
-                const id   = parseInt(item.dataset.id, 10);
+                const id = parseInt(item.dataset.id, 10);
                 /* El nuevo estado es el valor actual del checkbox tras el click */
                 const nuevoEstado = checkbox.checked;
 
@@ -591,10 +591,10 @@ const eventos = {
                  */
                 const tareaActual = {
                     id,
-                    titulo:      item.querySelector('.tarea-titulo').textContent,
+                    titulo: item.querySelector('.tarea-titulo').textContent,
                     descripcion: item.querySelector('.tarea-descripcion')?.textContent || null,
-                    prioridad:   item.querySelector('.tarea-prioridad').textContent,
-                    completada:  item.querySelector('.tarea-checkbox').checked,
+                    prioridad: item.querySelector('.tarea-prioridad').textContent,
+                    completada: item.querySelector('.tarea-checkbox').checked,
                 };
                 ui.abrirModalEdicion(tareaActual);
                 return;
@@ -616,7 +616,7 @@ const eventos = {
                 boton.disabled = true;
                 /* Animacion de salida sutil antes de eliminar del DOM */
                 item.style.transition = 'opacity 300ms ease, transform 300ms ease';
-                item.style.opacity    = '0.4';
+                item.style.opacity = '0.4';
 
                 try {
                     await api.eliminarTarea(id);
@@ -680,14 +680,14 @@ const eventos = {
     _registrarContadoresCaracteres() {
         const pares = [
             {
-                campo:    document.getElementById('campo-titulo'),
+                campo: document.getElementById('campo-titulo'),
                 contador: document.getElementById('contador-titulo'),
-                max:      100,
+                max: 100,
             },
             {
-                campo:    document.getElementById('campo-descripcion'),
+                campo: document.getElementById('campo-descripcion'),
                 contador: document.getElementById('contador-descripcion'),
-                max:      500,
+                max: 500,
             },
         ];
 

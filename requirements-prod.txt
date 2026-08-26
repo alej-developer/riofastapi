@@ -1,0 +1,36 @@
+# ============================================================
+# requirements-prod.txt — Dependencias exclusivas de produccion
+# ============================================================
+# Este archivo separa las dependencias de produccion de las de
+# desarrollo (pytest, httpx). El Dockerfile lo usara en lugar
+# de requirements.txt para producir imagenes mas ligeras.
+#
+# Principio: nunca incluir herramientas de test en la imagen
+# de produccion. Reduce el tamaño de la imagen y elimina
+# dependencias que podrian tener vulnerabilidades innecesarias.
+# ============================================================
+
+# ------------------------------------------------------------
+# Framework principal y servidor ASGI
+# ------------------------------------------------------------
+fastapi==0.115.5          # Framework web moderno y de alto rendimiento para APIs REST
+uvicorn[standard]==0.32.1 # Servidor ASGI de alta performance
+aiofiles==24.1.0          # Soporte asincrono para StaticFiles
+
+# ------------------------------------------------------------
+# Validacion y serializacion de datos
+# ------------------------------------------------------------
+pydantic==2.10.3          # Validacion de datos con tipos de Python
+pydantic-settings==2.6.1  # Gestion de configuracion desde variables de entorno
+
+# ------------------------------------------------------------
+# Seguridad estandar
+# ------------------------------------------------------------
+python-jose[cryptography]==3.3.0  # JSON Web Tokens (JWT)
+passlib[bcrypt]==1.7.4            # Hash seguro de contrasenas
+python-multipart==0.0.18          # Soporte para formularios
+
+# ------------------------------------------------------------
+# Control de tasa de peticiones (Rate Limiting)
+# ------------------------------------------------------------
+slowapi==0.1.9            # Rate limiting por IP para FastAPI

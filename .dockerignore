@@ -1,0 +1,74 @@
+# ============================================================
+# .dockerignore — Archivos excluidos del contexto de Docker
+# ============================================================
+# Docker copia todo el directorio del proyecto al "contexto de
+# construccion" antes de ejecutar el Dockerfile. Este archivo
+# excluye los elementos innecesarios para:
+#   1. Reducir el tamaño del contexto enviado al daemon de Docker.
+#   2. Evitar que secretos o datos locales entren en la imagen.
+#   3. Acelerar el tiempo de construccion (build).
+# ============================================================
+
+# ------------------------------------------------------------
+# Entorno virtual local de Python
+# Nunca debe entrar en la imagen: el Dockerfile instala
+# las dependencias directamente con pip dentro del contenedor.
+# ------------------------------------------------------------
+venv/
+.venv/
+env/
+
+# ------------------------------------------------------------
+# Cache de Python (bytecode compilado)
+# Se regenera automaticamente; no aporta valor en la imagen.
+# ------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# ------------------------------------------------------------
+# Control de versiones
+# El historial de git no es necesario en la imagen de produccion.
+# Incluirlo añaderia megabytes innecesarios.
+# ------------------------------------------------------------
+.git/
+.gitignore
+
+# ------------------------------------------------------------
+# Archivos de variables de entorno locales
+# CRITICO: Nunca incluir .env en la imagen Docker.
+# En GCP las variables se pasan como secretos de Cloud Run,
+# no como archivos dentro del contenedor.
+# ------------------------------------------------------------
+.env
+.env.*
+*.env
+
+# ------------------------------------------------------------
+# Herramientas de testing y cobertura
+# pytest y sus artefactos no son necesarios en produccion.
+# ------------------------------------------------------------
+tests/
+pytest.ini
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ------------------------------------------------------------
+# IDEs y editores
+# ------------------------------------------------------------
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ------------------------------------------------------------
+# Documentacion y archivos de solo lectura
+# No se necesitan dentro del contenedor en ejecucion.
+# ------------------------------------------------------------
+README.md
+*.md
