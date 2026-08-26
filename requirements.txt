@@ -28,6 +28,8 @@ python-multipart==0.0.18          # Soporte para formularios y subida de archivo
 slowapi==0.1.9            # Librería de rate limiting para FastAPI/Starlette basada en limits
 
 # ------------------------------------------------------------
-# Utilidades de desarrollo
+# Utilidades de desarrollo y pruebas
 # ------------------------------------------------------------
-httpx==0.28.1             # Cliente HTTP asíncrono para pruebas de integración
+httpx==0.28.1             # Cliente HTTP asincrono — requerido por TestClient de FastAPI
+pytest==8.3.4             # Framework de pruebas unitarias e de integracion
+pytest-asyncio==0.24.0    # Extension de pytest para funciones async/await

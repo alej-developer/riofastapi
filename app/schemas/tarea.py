@@ -18,10 +18,10 @@ Descripcion:
 # ------------------------------------------------------------
 # Importaciones de Pydantic para definición y validación de esquemas
 # ------------------------------------------------------------
-from pydantic import BaseModel, Field, field_validator  # Clases base y validadores
-from typing import Optional                              # Para campos opcionales
-from datetime import datetime                            # Para el campo de fecha de creación
-from enum import Enum                                    # Para el campo de prioridad restringido
+from pydantic import BaseModel, Field, field_validator, ConfigDict  # Clases base y validadores
+from typing import Optional                                          # Para campos opcionales
+from datetime import datetime                                        # Para el campo de fecha de creacion
+from enum import Enum                                                # Para el campo de prioridad restringido
 
 
 # ============================================================
@@ -201,10 +201,7 @@ class TareaRespuesta(TareaBase):
     id: int = Field(description="Identificador único de la tarea generado por el servidor.")
     fecha_creacion: datetime = Field(description="Fecha y hora UTC en que se creó la tarea.")
 
-    class Config:
-        """
-        Configuración interna del esquema de respuesta.
-        from_attributes=True permite construir el esquema desde
-        instancias de objetos ORM (como SQLAlchemy).
-        """
-        from_attributes = True
+    # Configuracion de Pydantic V2: from_attributes=True permite construir el
+    # esquema desde instancias de objetos ORM (como SQLAlchemy).
+    # Se usa ConfigDict en lugar de la clase Config interna (deprecada en Pydantic V2).
+    model_config = ConfigDict(from_attributes=True)

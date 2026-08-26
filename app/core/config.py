@@ -19,7 +19,7 @@ Uso:
 # ------------------------------------------------------------
 # Importaciones necesarias para la configuración
 # ------------------------------------------------------------
-from pydantic_settings import BaseSettings  # Clase base para configuración con variables de entorno
+from pydantic_settings import BaseSettings, SettingsConfigDict  # Clase base para configuracion con variables de entorno
 from functools import lru_cache              # Decorador para cachear la instancia de configuración
 
 
@@ -58,13 +58,12 @@ class Configuracion(BaseSettings):
     ALGORITMO_JWT: str = "HS256"        # Algoritmo de firma para tokens JWT
     MINUTOS_EXPIRACION_TOKEN: int = 30  # Tiempo de vida del token de acceso en minutos
 
-    class Config:
-        """
-        Configuración interna de Pydantic Settings.
-        Define el archivo .env del que se cargarán las variables de entorno.
-        """
-        env_file = ".env"               # Ruta al archivo de variables de entorno
-        env_file_encoding = "utf-8"     # Codificación del archivo .env
+    # Configuracion de Pydantic Settings V2: se usa SettingsConfigDict en lugar
+    # de la clase Config interna (deprecada en Pydantic V2 / pydantic-settings).
+    model_config = SettingsConfigDict(
+        env_file=".env",           # Ruta al archivo de variables de entorno
+        env_file_encoding="utf-8", # Codificacion del archivo .env
+    )
 
 
 @lru_cache()

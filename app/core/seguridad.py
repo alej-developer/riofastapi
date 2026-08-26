@@ -184,7 +184,9 @@ class CabecerasSeguridad(BaseHTTPMiddleware):
         # vulnerabilidades especificas de esa version. Se elimina
         # para dificultar el reconocimiento (fingerprinting) del sistema.
         # ------------------------------------------------------------
-        respuesta.headers.pop("server", None)  # Elimina la cabecera "server" si existe
+        # MutableHeaders de Starlette no implementa pop(); se usa del condicional.
+        if "server" in respuesta.headers:
+            del respuesta.headers["server"]
 
         return respuesta
 
