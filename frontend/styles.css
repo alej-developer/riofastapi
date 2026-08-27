@@ -13,68 +13,84 @@
 ------------------------------------------------------------ */
 :root {
     /* Colores de fondo */
-    --color-fondo:          #f7f7f8;       /* Fondo de la pagina: gris casi blanco */
-    --color-superficie:     #ffffff;       /* Fondo de tarjetas: blanco puro */
-    --color-superficie-alt: #f0f1f3;       /* Fondo alternativo (hover, inputs) */
+    --color-fondo: #f7f7f8;
+    /* Fondo de la pagina: gris casi blanco */
+    --color-superficie: #ffffff;
+    /* Fondo de tarjetas: blanco puro */
+    --color-superficie-alt: #f0f1f3;
+    /* Fondo alternativo (hover, inputs) */
 
     /* Colores de texto */
-    --color-texto-primario:   #18181b;     /* Titulos y texto importante */
-    --color-texto-secundario: #6b7280;     /* Texto de apoyo, etiquetas, pie */
-    --color-texto-terciario:  #9ca3af;     /* Contadores, placeholders */
+    --color-texto-primario: #18181b;
+    /* Titulos y texto importante */
+    --color-texto-secundario: #6b7280;
+    /* Texto de apoyo, etiquetas, pie */
+    --color-texto-terciario: #9ca3af;
+    /* Contadores, placeholders */
 
     /* Bordes y divisores */
-    --color-borde:         #e4e4e7;        /* Borde sutil para tarjetas e inputs */
-    --color-borde-focus:   #a1a1aa;        /* Borde al enfocar un input */
+    --color-borde: #e4e4e7;
+    /* Borde sutil para tarjetas e inputs */
+    --color-borde-focus: #a1a1aa;
+    /* Borde al enfocar un input */
 
     /* Acento neutro: azul-grisaceo muy desaturado */
-    --color-acento:        #71717a;        /* Para el rio, botones secundarios */
-    --color-acento-claro:  #d4d4d8;        /* Para ondas del rio, bordes hover */
+    --color-acento: #71717a;
+    /* Para el rio, botones secundarios */
+    --color-acento-claro: #d4d4d8;
+    /* Para ondas del rio, bordes hover */
 
     /* Estados funcionales (neutros, sin colores saturados) */
-    --color-exito:         #52525b;        /* Verde reemplazado por gris oscuro */
-    --color-error:         #3f3f46;        /* Error: gris muy oscuro + borde rojo */
-    --color-error-borde:   #d4d4d8;
+    --color-exito: #52525b;
+    /* Verde reemplazado por gris oscuro */
+    --color-error: #3f3f46;
+    /* Error: gris muy oscuro + borde rojo */
+    --color-error-borde: #d4d4d8;
 
     /* Prioridades: diferenciadas solo por opacidad/peso, no por color */
-    --prioridad-alta:      #3f3f46;
-    --prioridad-media:     #71717a;
-    --prioridad-baja:      #a1a1aa;
+    --prioridad-alta: #3f3f46;
+    --prioridad-media: #71717a;
+    --prioridad-baja: #a1a1aa;
 
     /* Animaciones del rio */
-    --rio-color-1: rgba(148, 163, 184, 0.35);  /* Azul-grisaceo traslucido */
-    --rio-color-2: rgba(203, 213, 225, 0.20);  /* Mas claro, segunda onda */
+    --rio-color-1: rgba(148, 163, 184, 0.35);
+    /* Azul-grisaceo traslucido */
+    --rio-color-2: rgba(203, 213, 225, 0.20);
+    /* Mas claro, segunda onda */
 
     /* Tipografia */
     --fuente-principal: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
     /* Espaciado */
-    --espacio-xs:  0.25rem;
-    --espacio-sm:  0.5rem;
-    --espacio-md:  1rem;
-    --espacio-lg:  1.5rem;
-    --espacio-xl:  2rem;
+    --espacio-xs: 0.25rem;
+    --espacio-sm: 0.5rem;
+    --espacio-md: 1rem;
+    --espacio-lg: 1.5rem;
+    --espacio-xl: 2rem;
     --espacio-2xl: 3rem;
 
     /* Radios de borde */
-    --radio-sm:  4px;
-    --radio-md:  8px;
-    --radio-lg:  12px;
+    --radio-sm: 4px;
+    --radio-md: 8px;
+    --radio-lg: 12px;
 
     /* Sombras muy sutiles */
-    --sombra-tarjeta: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-    --sombra-modal:   0 8px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
+    --sombra-tarjeta: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    --sombra-modal: 0 8px 32px rgba(0, 0, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.06);
 
     /* Transiciones */
-    --transicion-rapida:  150ms ease;
-    --transicion-normal:  250ms ease;
-    --transicion-lenta:   400ms ease;
+    --transicion-rapida: 150ms ease;
+    --transicion-normal: 250ms ease;
+    --transicion-lenta: 400ms ease;
 }
 
 
 /* ============================================================
    RESET Y BASE
    ============================================================ */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -85,6 +101,18 @@ html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+/*
+ * Regla global para el atributo HTML nativo `hidden`.
+ * En HTML5, `hidden` equivale a display:none, pero si un elemento
+ * tiene display:flex o display:block definido en CSS, el navegador
+ * da prioridad al CSS y el atributo `hidden` queda ignorado.
+ * Con !important garantizamos que [hidden] siempre oculta el elemento
+ * independientemente del valor de display asignado por otra regla.
+ */
+[hidden] {
+    display: none !important;
 }
 
 body {
@@ -178,14 +206,16 @@ a:hover {
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background-color: var(--color-acento-claro);  /* Gris por defecto (conectando) */
+    background-color: var(--color-acento-claro);
+    /* Gris por defecto (conectando) */
     flex-shrink: 0;
     transition: background-color var(--transicion-lenta);
 }
 
 /* Estado: conectado */
 .estado-punto.conectado {
-    background-color: #71717a;   /* Gris oscuro: activo */
+    background-color: #71717a;
+    /* Gris oscuro: activo */
     box-shadow: 0 0 0 2px rgba(113, 113, 122, 0.20);
 }
 
@@ -197,8 +227,15 @@ a:hover {
 
 /* Parpadeo sutil para el indicador de error */
 @keyframes parpadeo {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0.3; }
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
 }
 
 
@@ -225,17 +262,27 @@ a:hover {
 }
 
 .rio-onda {
-    width: 200%;          /* Doble del contenedor para el bucle sin salto */
+    width: 200%;
+    /* Doble del contenedor para el bucle sin salto */
     height: 100%;
     display: block;
-    animation: rio-fluir 10s linear infinite;  /* Flujo lento y continuo */
-    will-change: transform;  /* Optimizacion: el navegador usa la GPU para esta propiedad */
+    animation: rio-fluir 10s linear infinite;
+    /* Flujo lento y continuo */
+    will-change: transform;
+    /* Optimizacion: el navegador usa la GPU para esta propiedad */
 }
 
 /* Animacion del fluir: desplazamiento horizontal continuo */
 @keyframes rio-fluir {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-50%); }  /* -50% del 200% = -100% del contenedor */
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+
+    /* -50% del 200% = -100% del contenedor */
 }
 
 /* Onda principal: mas visible, fluye a velocidad base */
@@ -310,15 +357,14 @@ a:hover {
          claro -> oscuro -> muy oscuro -> oscuro -> claro
        Al desplazarse el background-position, ese pico de brillo
        viaja horizontalmente simulando la corriente del agua. */
-    background: linear-gradient(
-        90deg,
-        var(--rio-color-2),
-        var(--rio-color-1),
-        rgba(100, 116, 139, 0.55),
-        var(--rio-color-1),
-        var(--rio-color-2)
-    );
-    background-size: 300% 100%;   /* Mas ancho que el elemento para que el brillo viaje */
+    background: linear-gradient(90deg,
+            var(--rio-color-2),
+            var(--rio-color-1),
+            rgba(100, 116, 139, 0.55),
+            var(--rio-color-1),
+            var(--rio-color-2));
+    background-size: 300% 100%;
+    /* Mas ancho que el elemento para que el brillo viaje */
     border-radius: 999px;
     /* La animacion desplaza el patron del gradiente, simulando corriente */
     animation: divisor-fluir 6s linear infinite;
@@ -326,8 +372,13 @@ a:hover {
 
 /* Desplazamiento del gradiente de derecha a izquierda (sensacion de corriente) */
 @keyframes divisor-fluir {
-    0%   { background-position: 100% 0; }
-    100% { background-position: -200% 0; }
+    0% {
+        background-position: 100% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
 }
 
 
@@ -439,7 +490,8 @@ a:hover {
     cursor: pointer;
     user-select: none;
     height: 100%;
-    padding-top: 1.5rem; /* Alinea con los otros campos */
+    padding-top: 1.5rem;
+    /* Alinea con los otros campos */
 }
 
 .campo-checkbox {
@@ -466,12 +518,12 @@ a:hover {
 }
 
 /* Muestra un check cuando el checkbox nativo esta marcado */
-.campo-checkbox:checked + .checkbox-custom {
+.campo-checkbox:checked+.checkbox-custom {
     background: var(--color-acento);
     border-color: var(--color-acento);
 }
 
-.campo-checkbox:checked + .checkbox-custom::after {
+.campo-checkbox:checked+.checkbox-custom::after {
     content: '';
     width: 5px;
     height: 9px;
@@ -481,7 +533,7 @@ a:hover {
     transform: rotate(45deg) translateY(-1px);
 }
 
-.campo-checkbox:focus + .checkbox-custom {
+.campo-checkbox:focus+.checkbox-custom {
     box-shadow: 0 0 0 3px rgba(113, 113, 122, 0.15);
 }
 
@@ -566,7 +618,7 @@ a:hover {
 .boton-spinner {
     width: 14px;
     height: 14px;
-    border: 2px solid rgba(255,255,255,0.4);
+    border: 2px solid rgba(255, 255, 255, 0.4);
     border-top-color: white;
     border-radius: 50%;
     animation: girar 0.7s linear infinite;
@@ -574,7 +626,9 @@ a:hover {
 }
 
 @keyframes girar {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 
@@ -618,12 +672,10 @@ a:hover {
     width: 48px;
     height: 4px;
     border-radius: 999px;
-    background: repeating-linear-gradient(
-        90deg,
-        var(--rio-color-2) 0%,
-        var(--rio-color-1) 50%,
-        var(--rio-color-2) 100%
-    );
+    background: repeating-linear-gradient(90deg,
+            var(--rio-color-2) 0%,
+            var(--rio-color-1) 50%,
+            var(--rio-color-2) 100%);
     background-size: 200% 100%;
     animation: divisor-fluir 1.5s linear infinite;
 }
@@ -650,6 +702,7 @@ a:hover {
         opacity: 0;
         transform: translateY(-6px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -671,7 +724,8 @@ a:hover {
     width: 18px;
     height: 18px;
     border: 1.5px solid var(--color-borde-focus);
-    border-radius: 50%;  /* Circular para diferenciarlo del del formulario */
+    border-radius: 50%;
+    /* Circular para diferenciarlo del del formulario */
     background: transparent;
     cursor: pointer;
     appearance: none;
@@ -694,7 +748,8 @@ a:hover {
 /* Contenido de la tarea */
 .tarea-contenido {
     flex: 1;
-    min-width: 0;  /* Permite que el texto se trunce correctamente */
+    min-width: 0;
+    /* Permite que el texto se trunce correctamente */
 }
 
 .tarea-titulo {
@@ -740,9 +795,17 @@ a:hover {
     border: 1px solid currentColor;
 }
 
-.prioridad-alta  { color: var(--prioridad-alta); }
-.prioridad-media { color: var(--prioridad-media); }
-.prioridad-baja  { color: var(--prioridad-baja); }
+.prioridad-alta {
+    color: var(--prioridad-alta);
+}
+
+.prioridad-media {
+    color: var(--prioridad-media);
+}
+
+.prioridad-baja {
+    color: var(--prioridad-baja);
+}
 
 .tarea-id {
     font-size: 0.6875rem;
@@ -767,7 +830,8 @@ a:hover {
 .modal-fondo {
     position: fixed;
     inset: 0;
-    background: rgba(24, 24, 27, 0.35);  /* Negro muy transparente */
+    background: rgba(24, 24, 27, 0.35);
+    /* Negro muy transparente */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -781,8 +845,13 @@ a:hover {
 }
 
 @keyframes aparecer-fondo {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 .modal {
@@ -801,6 +870,7 @@ a:hover {
         opacity: 0;
         transform: translateY(-12px) scale(0.98);
     }
+
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
@@ -873,6 +943,7 @@ a:hover {
         opacity: 0;
         transform: translateY(8px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -884,6 +955,7 @@ a:hover {
         opacity: 1;
         transform: translateY(0);
     }
+
     to {
         opacity: 0;
         transform: translateY(4px);
