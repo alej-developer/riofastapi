@@ -21,6 +21,8 @@ venv.bak/
 .env.development
 .env.production
 *.env
+# La plantilla no contiene secretos y debe versionarse.
+!.env.example
 
 # ------------------------------------------------------------
 # Archivos compilados de Python

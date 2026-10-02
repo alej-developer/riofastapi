@@ -60,9 +60,13 @@ class Configuracion(BaseSettings):
 
     # Configuracion de Pydantic Settings V2: se usa SettingsConfigDict en lugar
     # de la clase Config interna (deprecada en Pydantic V2 / pydantic-settings).
+    # extra="ignore": el README y .env.example documentan PORT, que lee el
+    # contenedor (Cloud Run / Dockerfile). Esta clase usa PUERTO. Sin ignorar
+    # claves desconocidas, copiar .env.example a .env impide arrancar.
     model_config = SettingsConfigDict(
         env_file=".env",           # Ruta al archivo de variables de entorno
         env_file_encoding="utf-8", # Codificacion del archivo .env
+        extra="ignore",
     )
 
 
