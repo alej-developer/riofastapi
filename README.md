@@ -22,8 +22,11 @@ API REST construida con Python y FastAPI. Incluye un CRUD completo de tareas, ci
 
 ```
 Rio/
+├── LICENSE                    # Licencia MIT
+├── .env.example               # Plantilla de variables de entorno (ENTORNO, PORT, CLAVE_SECRETA, ...)
 ├── Dockerfile                 # Imagen de produccion multi-stage (sin root)
 ├── .dockerignore              # Exclusiones del contexto de Docker
+├── .github/workflows/ci.yml   # CI: pytest y construccion de la imagen Docker
 ├── main.py                    # Punto de entrada de la aplicacion FastAPI
 ├── requirements.txt           # Dependencias completas (desarrollo + produccion)
 ├── requirements-prod.txt      # Dependencias exclusivas de produccion (para Docker)
@@ -419,4 +422,4 @@ El proyecto implementa seis capas de proteccion independientes:
 
 ## Licencia
 
-MIT License
+MIT License. El texto completo esta en el archivo `LICENSE` de la raiz del repositorio.
