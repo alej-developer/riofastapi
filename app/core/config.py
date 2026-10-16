@@ -8,7 +8,9 @@ Descripción:
     o desde un archivo .env en el directorio raíz del proyecto.
 
     El uso de Pydantic Settings garantiza validación de tipos y
-    proporciona valores por defecto seguros para desarrollo local.
+    proporciona valores por defecto para desarrollo local.
+    CLAVE_SECRETA no tiene valor por defecto: si no está definida,
+    la aplicación no arranca.
 
 Uso:
     from app.core.config import configuracion
@@ -19,8 +21,10 @@ Uso:
 # ------------------------------------------------------------
 # Importaciones necesarias para la configuración
 # ------------------------------------------------------------
-from pydantic_settings import BaseSettings, SettingsConfigDict  # Clase base para configuracion con variables de entorno
 from functools import lru_cache              # Decorador para cachear la instancia de configuración
+
+from pydantic import Field, ValidationError, field_validator  # Validación de la clave secreta
+from pydantic_settings import BaseSettings, SettingsConfigDict  # Clase base para configuracion con variables de entorno
 
 
 class Configuracion(BaseSettings):
@@ -29,7 +33,8 @@ class Configuracion(BaseSettings):
 
     Hereda de BaseSettings de Pydantic, lo que permite que los atributos
     se lean automáticamente desde variables de entorno o un archivo .env.
-    Los valores definidos aquí son los valores por defecto para desarrollo.
+    Los valores definidos aquí son los valores por defecto para desarrollo,
+    salvo CLAVE_SECRETA, que es obligatoria.
     """
 
     # ----------------------------------------------------------
@@ -54,9 +59,24 @@ class Configuracion(BaseSettings):
     # ----------------------------------------------------------
     # Configuración de seguridad (JWT)
     # ----------------------------------------------------------
-    CLAVE_SECRETA: str = "cambia-esta-clave-en-produccion-es-muy-importante"  # Clave para firmar tokens JWT
+    # Sin valor por defecto. Si falta en el entorno y en .env, Pydantic
+    # lanza ValidationError y obtener_configuracion() impide el arranque.
+    CLAVE_SECRETA: str = Field(min_length=1)  # Clave para firmar tokens JWT
     ALGORITMO_JWT: str = "HS256"        # Algoritmo de firma para tokens JWT
     MINUTOS_EXPIRACION_TOKEN: int = 30  # Tiempo de vida del token de acceso en minutos
+
+    @field_validator("CLAVE_SECRETA")
+    @classmethod
+    def validar_clave_secreta(cls, valor: str) -> str:
+        """
+        Rechaza una clave vacía o solo con espacios.
+
+        Una variable definida pero en blanco equivale a no tener secreto:
+        la aplicación no debe arrancar en ese caso.
+        """
+        if not valor.strip():
+            raise ValueError("CLAVE_SECRETA debe estar definida")
+        return valor
 
     # Configuracion de Pydantic Settings V2: se usa SettingsConfigDict en lugar
     # de la clase Config interna (deprecada en Pydantic V2 / pydantic-settings).
@@ -79,10 +99,25 @@ def obtener_configuracion() -> Configuracion:
     una instancia de Configuracion durante todo el ciclo de vida
     de la aplicación (patrón Singleton).
 
+    Si CLAVE_SECRETA no está definida, lanza RuntimeError y la
+    aplicación no llega a arrancar.
+
     Returns:
         Configuracion: Instancia única de la configuración de la aplicación.
+
+    Raises:
+        RuntimeError: CLAVE_SECRETA ausente o vacía.
     """
-    return Configuracion()
+    try:
+        return Configuracion()
+    except ValidationError as error:
+        campos = {err["loc"][-1] for err in error.errors() if err.get("loc")}
+        if "CLAVE_SECRETA" in campos:
+            raise RuntimeError(
+                "CLAVE_SECRETA no está definida. "
+                "Define la variable de entorno antes de arrancar la aplicación."
+            ) from error
+        raise
 
 
 # ------------------------------------------------------------

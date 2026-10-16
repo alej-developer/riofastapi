@@ -95,11 +95,12 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Configurar variables de entorno (opcional en desarrollo)
+### 4. Configurar variables de entorno
+
+`CLAVE_SECRETA` es obligatoria. La aplicacion no arranca si no esta definida.
 
 ```bash
 # Copiar el archivo de ejemplo y editarlo segun tus valores locales
-# En desarrollo la aplicacion funciona con los valores por defecto
 cp .env.example .env
 ```
 
@@ -342,11 +343,11 @@ gcloud run deploy "${SERVICIO}" \
 |---|---|---|
 | `ENTORNO` | `desarrollo` | Modo de ejecucion. En `produccion` activa HSTS y CSP estricta |
 | `PORT` | `8000` | Puerto de escucha. Cloud Run inyecta `8080` automaticamente |
-| `CLAVE_SECRETA` | Valor de ejemplo | Clave para firmar tokens JWT. Cambiar obligatoriamente en produccion |
+| `CLAVE_SECRETA` | (sin valor por defecto) | Clave para firmar tokens JWT. Obligatoria: la aplicacion no arranca si falta. En produccion debe ser un secreto propio |
 | `ALGORITMO_JWT` | `HS256` | Algoritmo de firma de tokens |
 | `MINUTOS_EXPIRACION_TOKEN` | `30` | Duracion de los tokens de acceso en minutos |
 
-En Google Cloud Run, las variables sensibles como `CLAVE_SECRETA` deben gestionarse con **Secret Manager**:
+En Google Cloud Run, `CLAVE_SECRETA` tiene que estar definida **antes** de desplegar: si la revision arranca sin ella, el proceso termina al importar la configuracion. Las variables sensibles deben gestionarse con **Secret Manager**:
 
 ```bash
 # Crear el secreto en Secret Manager
