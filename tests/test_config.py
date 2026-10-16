@@ -62,6 +62,6 @@ def test_obtener_configuracion_falla_sin_clave(
         with pytest.raises(RuntimeError, match="CLAVE_SECRETA"):
             obtener_configuracion()
     finally:
-        monkeypatch.setenv("CLAVE_SECRETA", "clave-de-prueba-solo-para-tests")
+        monkeypatch.setenv("CLAVE_SECRETA", "clave-de-prueba-solo-para-tests-ok")
         obtener_configuracion.cache_clear()
         obtener_configuracion()

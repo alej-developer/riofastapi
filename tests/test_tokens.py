@@ -8,9 +8,11 @@ verifica el algoritmo que esta función le pasa.
 
 import base64
 import json
+import warnings
 
 import jwt
 import pytest
+from jwt.warnings import InsecureKeyLengthWarning
 
 from app.core.config import configuracion
 from app.core.tokens import crear_token, decodificar_token
@@ -48,11 +50,14 @@ def test_roundtrip_con_el_algoritmo_configurado() -> None:
 
 def test_rechaza_token_firmado_con_otro_algoritmo() -> None:
     """Un HS384 no debe colar cuando la API solo admite el algoritmo fijado."""
-    otro = jwt.encode(
-        {"sub": "atacante"},
-        configuracion.CLAVE_SECRETA,
-        algorithm="HS384",
-    )
+    # La clave de la app es de HS256; HS384 avisa de longitud y debe rechazarse igual.
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", InsecureKeyLengthWarning)
+        otro = jwt.encode(
+            {"sub": "atacante"},
+            configuracion.CLAVE_SECRETA,
+            algorithm="HS384",
+        )
     with pytest.raises(jwt.InvalidTokenError):
         decodificar_token(otro)
 

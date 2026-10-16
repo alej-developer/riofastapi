@@ -35,7 +35,8 @@ Rio/
 ├── app/
 │   ├── core/
 │   │   ├── config.py          # Configuracion centralizada (Pydantic Settings)
-│   │   └── seguridad.py       # Middlewares: CORS, rate limiting, cabeceras HTTP
+│   │   ├── seguridad.py       # Middlewares: CORS, rate limiting, cabeceras HTTP
+│   │   └── tokens.py          # JWT con PyJWT y algoritmo fijado al decodificar
 │   ├── models/
 │   │   └── tarea.py           # Modelo interno y repositorio en memoria
 │   ├── routers/
@@ -50,7 +51,9 @@ Rio/
 │
 └── tests/
     ├── conftest.py            # Fixtures de pytest (aislamiento entre tests)
-    └── test_main.py           # 38 tests: CRUD, seguridad, cabeceras, CORS, rate limiting
+    ├── test_config.py         # Arranque sin CLAVE_SECRETA
+    ├── test_main.py           # CRUD, seguridad, cabeceras, CORS, rate limiting
+    └── test_tokens.py         # JWT con el algoritmo fijado al decodificar
 ```
 
 ---
@@ -125,7 +128,7 @@ La API estara disponible en:
 
 ## Ejecucion de los tests
 
-La suite de tests cubre 38 casos: CRUD exitoso, validacion de datos maliciosos (XSS, SQL injection, type confusion, mass assignment), cabeceras de seguridad HTTP, politica CORS y rate limiting.
+La suite de tests cubre 47 casos: CRUD exitoso, validacion de datos maliciosos (XSS, SQL injection, type confusion, mass assignment), cabeceras de seguridad HTTP, politica CORS, rate limiting, JWT con algoritmo fijado y arranque sin CLAVE_SECRETA.
 
 ```bash
 # Ejecutar todos los tests con salida detallada

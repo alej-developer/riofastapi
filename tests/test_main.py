@@ -325,7 +325,7 @@ class TestCiberseguridadValidacionDatos:
         }
         respuesta = cliente.post("/api/v1/tareas/", json=payload_xss)
 
-        assert respuesta.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY, (
+        assert respuesta.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT, (
             "El sistema debe rechazar titulos con etiquetas HTML/JS (prevencion XSS)"
         )
 
@@ -348,7 +348,7 @@ class TestCiberseguridadValidacionDatos:
         }
         respuesta = cliente.post("/api/v1/tareas/", json=payload_sql)
 
-        assert respuesta.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY, (
+        assert respuesta.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT, (
             "El sistema debe rechazar titulos con secuencias de inyeccion SQL"
         )
 
@@ -366,7 +366,7 @@ class TestCiberseguridadValidacionDatos:
         payload_vacio = {"titulo": "", "prioridad": "media"}
         respuesta = cliente.post("/api/v1/tareas/", json=payload_vacio)
 
-        assert respuesta.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert respuesta.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
 
     def test_seguridad_rechaza_titulo_demasiado_largo(self, cliente: TestClient) -> None:
         """
@@ -381,7 +381,7 @@ class TestCiberseguridadValidacionDatos:
         payload_largo = {"titulo": "A" * 101, "prioridad": "media"}
         respuesta = cliente.post("/api/v1/tareas/", json=payload_largo)
 
-        assert respuesta.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY, (
+        assert respuesta.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT, (
             "El sistema debe rechazar titulos que superen los 100 caracteres"
         )
 
@@ -400,7 +400,7 @@ class TestCiberseguridadValidacionDatos:
         }
         respuesta = cliente.post("/api/v1/tareas/", json=payload_largo)
 
-        assert respuesta.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert respuesta.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
 
     def test_seguridad_rechaza_prioridad_invalida(self, cliente: TestClient) -> None:
         """
@@ -416,7 +416,7 @@ class TestCiberseguridadValidacionDatos:
         payload_invalido = {"titulo": "Tarea con prioridad inventada", "prioridad": "CRITICA_URGENTE"}
         respuesta = cliente.post("/api/v1/tareas/", json=payload_invalido)
 
-        assert respuesta.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert respuesta.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
 
     def test_seguridad_rechaza_tipo_incorrecto_en_completada(self, cliente: TestClient) -> None:
         """
@@ -435,7 +435,7 @@ class TestCiberseguridadValidacionDatos:
         }
         respuesta = cliente.post("/api/v1/tareas/", json=payload_tipo_incorrecto)
 
-        assert respuesta.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert respuesta.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
 
     def test_seguridad_rechaza_id_negativo_en_ruta(self, cliente: TestClient) -> None:
         """
@@ -450,7 +450,7 @@ class TestCiberseguridadValidacionDatos:
         """
         for id_invalido in ["/api/v1/tareas/0", "/api/v1/tareas/-1", "/api/v1/tareas/-999"]:
             respuesta = cliente.get(id_invalido)
-            assert respuesta.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY, (
+            assert respuesta.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT, (
                 f"El ID '{id_invalido}' deberia ser rechazado como no valido"
             )
 
@@ -465,7 +465,7 @@ class TestCiberseguridadValidacionDatos:
         """
         for id_invalido in ["/api/v1/tareas/abc", "/api/v1/tareas/null", "/api/v1/tareas/1.5"]:
             respuesta = cliente.get(id_invalido)
-            assert respuesta.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY, (
+            assert respuesta.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT, (
                 f"El ID '{id_invalido}' deberia ser rechazado como no entero"
             )
 

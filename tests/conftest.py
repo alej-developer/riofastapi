@@ -29,15 +29,15 @@ from fastapi.testclient import TestClient      # Cliente HTTP de prueba (no leva
 # Se define antes de importar la aplicación para que la suite pueda cargarla.
 os.environ.setdefault(
     "CLAVE_SECRETA",
-    "clave-de-prueba-solo-para-tests",
+    "clave-de-prueba-solo-para-tests-ok",
 )
 
 # ------------------------------------------------------------
 # Importaciones del proyecto
 # ------------------------------------------------------------
-from main import app  # noqa: E402  Instancia principal de la aplicacion
-from app.models.tarea import repositorio_tareas  # noqa: E402  Repositorio en memoria
-from app.core.seguridad import limitador  # noqa: E402  Limiter de slowapi
+from main import app                             # Instancia principal de la aplicacion
+from app.models.tarea import repositorio_tareas  # Repositorio en memoria para limpiarlo entre tests
+from app.core.seguridad import limitador         # Limiter de slowapi para resetear contadores
 
 
 # ============================================================

@@ -32,6 +32,6 @@ slowapi==0.1.9            # Librería de rate limiting para FastAPI/Starlette ba
 # ------------------------------------------------------------
 # Utilidades de desarrollo y pruebas
 # ------------------------------------------------------------
-httpx==0.28.1             # Cliente HTTP asincrono — requerido por TestClient de FastAPI
+httpx2==2.13.1            # Cliente HTTP del TestClient de Starlette 1.8 (httpx queda en desuso)
 pytest==9.1.1             # Framework de pruebas (>=9.0.3)
 pytest-asyncio==1.4.0     # Extension de pytest para async; 0.24 no admite pytest 9
