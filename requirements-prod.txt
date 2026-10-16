@@ -13,7 +13,8 @@
 # ------------------------------------------------------------
 # Framework principal y servidor ASGI
 # ------------------------------------------------------------
-fastapi==0.115.5          # Framework web moderno y de alto rendimiento para APIs REST
+fastapi==0.143.2          # Framework web moderno y de alto rendimiento para APIs REST
+starlette==1.8.0          # Toolkit ASGI. Versión actual sin los CVE conocidos de 2025-2026
 uvicorn[standard]==0.32.1 # Servidor ASGI de alta performance
 aiofiles==24.1.0          # Soporte asincrono para StaticFiles
 
@@ -26,9 +27,9 @@ pydantic-settings==2.6.1  # Gestion de configuracion desde variables de entorno
 # ------------------------------------------------------------
 # Seguridad estandar
 # ------------------------------------------------------------
-python-jose[cryptography]==3.3.0  # JSON Web Tokens (JWT)
+PyJWT[crypto]==2.15.1            # JWT. Al decodificar se fija el algoritmo (sustituye a python-jose)
 passlib[bcrypt]==1.7.4            # Hash seguro de contrasenas
-python-multipart==0.0.18          # Soporte para formularios
+python-multipart==0.0.32          # Formularios y subida de archivos (>=0.0.31, sin CVE conocidos)
 
 # ------------------------------------------------------------
 # Control de tasa de peticiones (Rate Limiting)

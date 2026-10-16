@@ -5,16 +5,20 @@ on:
     branches: [main]
   pull_request:
 
+# El token del workflow solo puede leer el contenido del repositorio.
+permissions:
+  contents: read
+
 jobs:
   pytest:
     name: pytest
     runs-on: ubuntu-latest
     steps:
       - name: Clonar el repositorio
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Configurar Python 3.11
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.11"
           cache: pip
@@ -31,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clonar el repositorio
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Construir la imagen
         run: docker build -t rio-api:ci .

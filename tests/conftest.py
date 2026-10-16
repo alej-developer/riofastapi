@@ -20,8 +20,17 @@ Descripcion:
 # ------------------------------------------------------------
 # Importaciones de pytest y FastAPI
 # ------------------------------------------------------------
+import os
+
 import pytest                                  # Framework de pruebas
 from fastapi.testclient import TestClient      # Cliente HTTP de prueba (no levanta servidor real)
+
+# CLAVE_SECRETA no tiene valor por defecto: la app no arranca sin ella.
+# Se define antes de importar la aplicación para que la suite pueda cargarla.
+os.environ.setdefault(
+    "CLAVE_SECRETA",
+    "clave-de-prueba-solo-para-tests-ok",
+)
 
 # ------------------------------------------------------------
 # Importaciones del proyecto

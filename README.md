@@ -35,7 +35,8 @@ Rio/
 ├── app/
 │   ├── core/
 │   │   ├── config.py          # Configuracion centralizada (Pydantic Settings)
-│   │   └── seguridad.py       # Middlewares: CORS, rate limiting, cabeceras HTTP
+│   │   ├── seguridad.py       # Middlewares: CORS, rate limiting, cabeceras HTTP
+│   │   └── tokens.py          # JWT con PyJWT y algoritmo fijado al decodificar
 │   ├── models/
 │   │   └── tarea.py           # Modelo interno y repositorio en memoria
 │   ├── routers/
@@ -50,7 +51,9 @@ Rio/
 │
 └── tests/
     ├── conftest.py            # Fixtures de pytest (aislamiento entre tests)
-    └── test_main.py           # 38 tests: CRUD, seguridad, cabeceras, CORS, rate limiting
+    ├── test_config.py         # Arranque sin CLAVE_SECRETA
+    ├── test_main.py           # CRUD, seguridad, cabeceras, CORS, rate limiting
+    └── test_tokens.py         # JWT con el algoritmo fijado al decodificar
 ```
 
 ---
@@ -95,11 +98,12 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Configurar variables de entorno (opcional en desarrollo)
+### 4. Configurar variables de entorno
+
+`CLAVE_SECRETA` es obligatoria. La aplicacion no arranca si no esta definida.
 
 ```bash
 # Copiar el archivo de ejemplo y editarlo segun tus valores locales
-# En desarrollo la aplicacion funciona con los valores por defecto
 cp .env.example .env
 ```
 
@@ -124,7 +128,7 @@ La API estara disponible en:
 
 ## Ejecucion de los tests
 
-La suite de tests cubre 38 casos: CRUD exitoso, validacion de datos maliciosos (XSS, SQL injection, type confusion, mass assignment), cabeceras de seguridad HTTP, politica CORS y rate limiting.
+La suite de tests cubre 47 casos: CRUD exitoso, validacion de datos maliciosos (XSS, SQL injection, type confusion, mass assignment), cabeceras de seguridad HTTP, politica CORS, rate limiting, JWT con algoritmo fijado y arranque sin CLAVE_SECRETA.
 
 ```bash
 # Ejecutar todos los tests con salida detallada
@@ -342,11 +346,11 @@ gcloud run deploy "${SERVICIO}" \
 |---|---|---|
 | `ENTORNO` | `desarrollo` | Modo de ejecucion. En `produccion` activa HSTS y CSP estricta |
 | `PORT` | `8000` | Puerto de escucha. Cloud Run inyecta `8080` automaticamente |
-| `CLAVE_SECRETA` | Valor de ejemplo | Clave para firmar tokens JWT. Cambiar obligatoriamente en produccion |
+| `CLAVE_SECRETA` | (sin valor por defecto) | Clave para firmar tokens JWT. Obligatoria: la aplicacion no arranca si falta. En produccion debe ser un secreto propio |
 | `ALGORITMO_JWT` | `HS256` | Algoritmo de firma de tokens |
 | `MINUTOS_EXPIRACION_TOKEN` | `30` | Duracion de los tokens de acceso en minutos |
 
-En Google Cloud Run, las variables sensibles como `CLAVE_SECRETA` deben gestionarse con **Secret Manager**:
+En Google Cloud Run, `CLAVE_SECRETA` tiene que estar definida **antes** de desplegar: si la revision arranca sin ella, el proceso termina al importar la configuracion. Las variables sensibles deben gestionarse con **Secret Manager**:
 
 ```bash
 # Crear el secreto en Secret Manager
