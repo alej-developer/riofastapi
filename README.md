@@ -145,7 +145,7 @@ pip install pytest-cov
 pytest tests/ --cov=app --cov-report=term-missing
 ```
 
-Resultado esperado: `38 passed` sin warnings de Pydantic.
+Resultado esperado: `47 passed` sin warnings de Pydantic.
 
 ---
 
