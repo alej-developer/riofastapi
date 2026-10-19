@@ -1,15 +1,15 @@
 # Rio API
 
-API REST construida con Python y FastAPI. Incluye un CRUD completo de tareas, ciberseguridad por capas (CORS restrictivo, rate limiting, cabeceras HTTP de seguridad), validacion estricta de datos con Pydantic, suite de tests automatizados y un frontend minimalista servido desde el mismo servidor.
+API REST construida con Python y FastAPI. Incluye un CRUD completo de tareas, ciberseguridad por capas (CORS restrictivo, rate limiting, cabeceras HTTP de seguridad), validación estricta de datos con Pydantic, suite de tests automatizados y un frontend minimalista servido desde el mismo servidor.
 
 ---
 
-## Indice
+## Índice
 
 1. [Estructura del proyecto](#estructura-del-proyecto)
 2. [Requisitos previos](#requisitos-previos)
-3. [Instalacion y ejecucion en local](#instalacion-y-ejecucion-en-local)
-4. [Ejecucion de los tests](#ejecucion-de-los-tests)
+3. [Instalación y ejecución en local](#instalación-y-ejecución-en-local)
+4. [Ejecución de los tests](#ejecución-de-los-tests)
 5. [Despliegue con Docker en local](#despliegue-con-docker-en-local)
 6. [Despliegue en Google Cloud Run](#despliegue-en-google-cloud-run)
 7. [Variables de entorno](#variables-de-entorno)
@@ -60,17 +60,17 @@ Rio/
 
 ## Requisitos previos
 
-| Herramienta | Version minima | Uso |
+| Herramienta | Versión mínima | Uso |
 |---|---|---|
-| Python | 3.11 | Runtime de la aplicacion |
-| pip | 23+ | Gestion de dependencias Python |
-| Docker | 24+ | Contenedorizacion |
+| Python | 3.11 | Runtime de la aplicación |
+| pip | 23+ | Gestión de dependencias Python |
+| Docker | 24+ | Contenedorización |
 | gcloud CLI | Cualquiera reciente | Despliegue en Google Cloud |
 | Cuenta de GCP | — | Proyecto activo con billing |
 
 ---
 
-## Instalacion y ejecucion en local
+## Instalación y ejecución en local
 
 ### 1. Clonar el repositorio
 
@@ -100,7 +100,7 @@ pip install -r requirements.txt
 
 ### 4. Configurar variables de entorno
 
-`CLAVE_SECRETA` es obligatoria. La aplicacion no arranca si no esta definida.
+`CLAVE_SECRETA` es obligatoria. La aplicación no arranca si no está definida.
 
 ```bash
 # Copiar el archivo de ejemplo y editarlo segun tus valores locales
@@ -113,22 +113,22 @@ cp .env.example .env
 uvicorn main:app --reload
 ```
 
-La API estara disponible en:
+La API estará disponible en:
 
-| URL | Descripcion |
+| URL | Descripción |
 |---|---|
 | `http://localhost:8000/` | Endpoint de bienvenida |
 | `http://localhost:8000/health` | Health check |
 | `http://localhost:8000/api/v1/tareas/` | CRUD de tareas |
 | `http://localhost:8000/frontend/index.html` | Interfaz web |
-| `http://localhost:8000/docs` | Documentacion Swagger UI |
-| `http://localhost:8000/redoc` | Documentacion ReDoc |
+| `http://localhost:8000/docs` | Documentación Swagger UI |
+| `http://localhost:8000/redoc` | Documentación ReDoc |
 
 ---
 
-## Ejecucion de los tests
+## Ejecución de los tests
 
-La suite de tests cubre 47 casos: CRUD exitoso, validacion de datos maliciosos (XSS, SQL injection, type confusion, mass assignment), cabeceras de seguridad HTTP, politica CORS, rate limiting, JWT con algoritmo fijado y arranque sin CLAVE_SECRETA.
+La suite de tests cubre 47 casos: CRUD exitoso, validación de datos maliciosos (XSS, SQL injection, type confusion, mass assignment), cabeceras de seguridad HTTP, política CORS, rate limiting, JWT con algoritmo fijado y arranque sin CLAVE_SECRETA.
 
 ```bash
 # Ejecutar todos los tests con salida detallada
@@ -151,7 +151,7 @@ Resultado esperado: `47 passed` sin warnings de Pydantic.
 
 ## Despliegue con Docker en local
 
-Usar Docker localmente permite verificar que la imagen de produccion funciona correctamente antes de subir a la nube.
+Usar Docker localmente permite verificar que la imagen de producción funciona correctamente antes de subir a la nube.
 
 ### 1. Construir la imagen
 
@@ -163,7 +163,7 @@ docker build --no-cache -t rio-api:local .
 docker build -t rio-api:local .
 ```
 
-### 2. Verificar que la imagen se creo correctamente
+### 2. Verificar que la imagen se creó correctamente
 
 ```bash
 docker images rio-api
@@ -198,11 +198,11 @@ docker stop <ID_DEL_CONTENEDOR>
 
 ## Despliegue en Google Cloud Run
 
-Google Cloud Run ejecuta contenedores sin necesidad de gestionar servidores. Escala automaticamente a cero cuando no hay trafico y cobra solo por el tiempo de procesamiento real.
+Google Cloud Run ejecuta contenedores sin necesidad de gestionar servidores. Escala automáticamente a cero cuando no hay tráfico y cobra solo por el tiempo de procesamiento real.
 
-### Prerequisitos de GCP
+### Prerrequisitos de GCP
 
-Antes de ejecutar los comandos de despliegue, asegurate de tener:
+Antes de ejecutar los comandos de despliegue, asegúrate de tener:
 
 1. Un proyecto de GCP activo con billing habilitado.
 2. Las APIs necesarias activadas en el proyecto.
@@ -234,7 +234,7 @@ gcloud services enable \
 
 ### Paso 3: Crear el repositorio de contenedores en Artifact Registry
 
-Artifact Registry es el registro privado de Docker de GCP. Es mas seguro y rapido que Docker Hub para imagenes privadas.
+Artifact Registry es el registro privado de Docker de GCP. Es más seguro y rápido que Docker Hub para imágenes privadas.
 
 ```bash
 # Crea el repositorio (solo necesario la primera vez)
@@ -282,20 +282,20 @@ gcloud run deploy "${SERVICIO}" \
     --set-env-vars "ENTORNO=produccion"
 ```
 
-Descripcion de cada parametro:
+Descripción de cada parámetro:
 
-| Parametro | Valor | Descripcion |
+| Parámetro | Valor | Descripción |
 |---|---|---|
 | `--image` | URL de Artifact Registry | Imagen Docker a desplegar |
 | `--platform managed` | managed | Cloud Run completamente gestionado (sin Kubernetes) |
-| `--region` | europe-west1 | Region de Europa Occidental (baja latencia desde Espana) |
-| `--allow-unauthenticated` | — | Permite acceso publico sin token de GCP |
-| `--port` | 8080 | Puerto que escucha la aplicacion (coincide con el Dockerfile) |
+| `--region` | europe-west1 | Región de Europa Occidental (baja latencia desde España) |
+| `--allow-unauthenticated` | — | Permite acceso público sin token de GCP |
+| `--port` | 8080 | Puerto que escucha la aplicación (coincide con el Dockerfile) |
 | `--memory` | 512Mi | Memoria RAM asignada al contenedor |
 | `--cpu` | 1 | vCPUs asignadas |
-| `--min-instances` | 0 | Escala a cero cuando no hay trafico (ahorro de costes) |
-| `--max-instances` | 10 | Limite de instancias para controlar costes en picos |
-| `--set-env-vars` | ENTORNO=produccion | Activa HSTS y CSP estricta en produccion |
+| `--min-instances` | 0 | Escala a cero cuando no hay tráfico (ahorro de costes) |
+| `--max-instances` | 10 | Límite de instancias para controlar costes en picos |
+| `--set-env-vars` | ENTORNO=produccion | Activa HSTS y CSP estricta en producción |
 
 ### Paso 6: Verificar el despliegue
 
@@ -321,7 +321,7 @@ gcloud logging read \
 
 ### Actualizaciones posteriores
 
-Para desplegar una nueva version de la aplicacion:
+Para desplegar una nueva versión de la aplicación:
 
 ```bash
 # 1. Construir y subir la nueva imagen (con tag de version recomendado)
@@ -342,15 +342,15 @@ gcloud run deploy "${SERVICIO}" \
 
 ## Variables de entorno
 
-| Variable | Por defecto | Descripcion |
+| Variable | Por defecto | Descripción |
 |---|---|---|
-| `ENTORNO` | `desarrollo` | Modo de ejecucion. En `produccion` activa HSTS y CSP estricta |
-| `PORT` | `8000` | Puerto de escucha. Cloud Run inyecta `8080` automaticamente |
-| `CLAVE_SECRETA` | (sin valor por defecto) | Clave para firmar tokens JWT. Obligatoria: la aplicacion no arranca si falta. En produccion debe ser un secreto propio |
+| `ENTORNO` | `desarrollo` | Modo de ejecución. En `produccion` activa HSTS y CSP estricta |
+| `PORT` | `8000` | Puerto de escucha. Cloud Run inyecta `8080` automáticamente |
+| `CLAVE_SECRETA` | (sin valor por defecto) | Clave para firmar tokens JWT. Obligatoria: la aplicación no arranca si falta. En producción debe ser un secreto propio |
 | `ALGORITMO_JWT` | `HS256` | Algoritmo de firma de tokens |
-| `MINUTOS_EXPIRACION_TOKEN` | `30` | Duracion de los tokens de acceso en minutos |
+| `MINUTOS_EXPIRACION_TOKEN` | `30` | Duración de los tokens de acceso en minutos |
 
-En Google Cloud Run, `CLAVE_SECRETA` tiene que estar definida **antes** de desplegar: si la revision arranca sin ella, el proceso termina al importar la configuracion. Las variables sensibles deben gestionarse con **Secret Manager**:
+En Google Cloud Run, `CLAVE_SECRETA` tiene que estar definida **antes** de desplegar: si la revisión arranca sin ella, el proceso termina al importar la configuración. Las variables sensibles deben gestionarse con **Secret Manager**:
 
 ```bash
 # Crear el secreto en Secret Manager
@@ -370,14 +370,14 @@ gcloud run deploy "${SERVICIO}" \
 
 ### Estado del servidor
 
-| Metodo | Ruta | Descripcion |
+| Método | Ruta | Descripción |
 |---|---|---|
-| GET | `/` | Bienvenida y version de la API |
+| GET | `/` | Bienvenida y versión de la API |
 | GET | `/health` | Health check para orquestadores |
 
 ### Tareas (CRUD)
 
-| Metodo | Ruta | Descripcion | Codigo de exito |
+| Método | Ruta | Descripción | Código de éxito |
 |---|---|---|---|
 | GET | `/api/v1/tareas/` | Listar todas las tareas | 200 |
 | POST | `/api/v1/tareas/` | Crear una nueva tarea | 201 |
@@ -385,14 +385,14 @@ gcloud run deploy "${SERVICIO}" \
 | PUT | `/api/v1/tareas/{id}` | Actualizar una tarea (parcial) | 200 |
 | DELETE | `/api/v1/tareas/{id}` | Eliminar una tarea | 204 |
 
-### Documentacion interactiva
+### Documentación interactiva
 
-| URL | Descripcion |
+| URL | Descripción |
 |---|---|
 | `/docs` | Swagger UI: prueba los endpoints desde el navegador |
-| `/redoc` | ReDoc: documentacion de referencia |
+| `/redoc` | ReDoc: documentación de referencia |
 
-### Ejemplo de peticion con curl
+### Ejemplo de petición con curl
 
 ```bash
 # Crear una tarea
@@ -411,14 +411,14 @@ curl -X DELETE http://localhost:8000/api/v1/tareas/1
 
 ## Capas de ciberseguridad
 
-El proyecto implementa seis capas de proteccion independientes:
+El proyecto implementa seis capas de protección independientes:
 
 | Capa | Mecanismo | Ataque prevenido |
 |---|---|---|
-| Validacion de tipos | Pydantic con tipos estrictos | Type confusion, payloads malformados |
-| Sanitizacion de entrada | field_validator en titulos | XSS, SQL Injection |
-| Limites de longitud | min_length / max_length | Desbordamiento, DoS por payload |
-| CORS restrictivo | Lista blanca de origenes | CSRF via JavaScript desde dominios externos |
+| Validación de tipos | Pydantic con tipos estrictos | Type confusion, payloads malformados |
+| Sanitización de entrada | field_validator en títulos | XSS, SQL Injection |
+| Límites de longitud | min_length / max_length | Desbordamiento, DoS por payload |
+| CORS restrictivo | Lista blanca de orígenes | CSRF vía JavaScript desde dominios externos |
 | Rate limiting | slowapi por IP (10-60/min) | DDoS, brute-force, spam de datos |
 | Cabeceras HTTP | Middleware personalizado (7 cabeceras) | XSS, clickjacking, MIME sniffing, fingerprinting |
 
@@ -426,4 +426,4 @@ El proyecto implementa seis capas de proteccion independientes:
 
 ## Licencia
 
-MIT License. El texto completo esta en el archivo `LICENSE` de la raiz del repositorio.
+MIT License. El texto completo está en el archivo `LICENSE` de la raíz del repositorio.
