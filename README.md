@@ -24,17 +24,17 @@ API REST construida con Python y FastAPI. Incluye un CRUD completo de tareas, ci
 Rio/
 ├── LICENSE                    # Licencia MIT
 ├── .env.example               # Plantilla de variables de entorno (ENTORNO, PORT, CLAVE_SECRETA, ...)
-├── Dockerfile                 # Imagen de produccion multi-stage (sin root)
+├── Dockerfile                 # Imagen de producción multi-stage (sin root)
 ├── .dockerignore              # Exclusiones del contexto de Docker
-├── .github/workflows/ci.yml   # CI: pytest y construccion de la imagen Docker
-├── main.py                    # Punto de entrada de la aplicacion FastAPI
-├── requirements.txt           # Dependencias completas (desarrollo + produccion)
-├── requirements-prod.txt      # Dependencias exclusivas de produccion (para Docker)
-├── pytest.ini                 # Configuracion de pytest
+├── .github/workflows/ci.yml   # CI: pytest y construcción de la imagen Docker
+├── main.py                    # Punto de entrada de la aplicación FastAPI
+├── requirements.txt           # Dependencias completas (desarrollo + producción)
+├── requirements-prod.txt      # Dependencias exclusivas de producción (para Docker)
+├── pytest.ini                 # Configuración de pytest
 │
 ├── app/
 │   ├── core/
-│   │   ├── config.py          # Configuracion centralizada (Pydantic Settings)
+│   │   ├── config.py          # Configuración centralizada (Pydantic Settings)
 │   │   ├── seguridad.py       # Middlewares: CORS, rate limiting, cabeceras HTTP
 │   │   └── tokens.py          # JWT con PyJWT y algoritmo fijado al decodificar
 │   ├── models/
@@ -42,12 +42,12 @@ Rio/
 │   ├── routers/
 │   │   └── tareas.py          # Endpoints CRUD REST para el recurso Tarea
 │   └── schemas/
-│       └── tarea.py           # Esquemas de validacion Pydantic
+│       └── tarea.py           # Esquemas de validación Pydantic
 │
 ├── frontend/
 │   ├── index.html             # Interfaz de usuario
-│   ├── styles.css             # Estilos con animacion de rio en CSS puro
-│   └── app.js                 # Logica JS con Fetch API
+│   ├── styles.css             # Estilos con animación de río en CSS puro
+│   └── app.js                 # Lógica JS con Fetch API
 │
 └── tests/
     ├── conftest.py            # Fixtures de pytest (aislamiento entre tests)
@@ -103,7 +103,7 @@ pip install -r requirements.txt
 `CLAVE_SECRETA` es obligatoria. La aplicación no arranca si no está definida.
 
 ```bash
-# Copiar el archivo de ejemplo y editarlo segun tus valores locales
+# Copiar el archivo de ejemplo y editarlo según tus valores locales
 cp .env.example .env
 ```
 
@@ -156,10 +156,10 @@ Usar Docker localmente permite verificar que la imagen de producción funciona c
 ### 1. Construir la imagen
 
 ```bash
-# El flag --no-cache fuerza la reconstruccion completa (util para CI/CD)
+# El flag --no-cache fuerza la reconstrucción completa (útil para CI/CD)
 docker build --no-cache -t rio-api:local .
 
-# Construccion normal (usa cache de layers para mayor velocidad)
+# Construcción normal (usa cache de layers para mayor velocidad)
 docker build -t rio-api:local .
 ```
 
@@ -173,7 +173,7 @@ docker images rio-api
 
 ```bash
 # -p 8080:8080  Mapea el puerto 8080 del host al 8080 del contenedor
-# --rm          Elimina el contenedor automaticamente al detenerlo
+# --rm          Elimina el contenedor automáticamente al detenerlo
 # -e PORT=8080  Simula la variable de entorno que inyecta Cloud Run
 docker run --rm -p 8080:8080 -e PORT=8080 rio-api:local
 ```
@@ -211,13 +211,13 @@ Antes de ejecutar los comandos de despliegue, asegúrate de tener:
 ### Paso 1: Autenticarse con gcloud
 
 ```bash
-# Inicia el flujo de autenticacion en el navegador
+# Inicia el flujo de autenticación en el navegador
 gcloud auth login
 
 # Configura el proyecto por defecto (sustituye TU_PROYECTO_ID)
 gcloud config set project TU_PROYECTO_ID
 
-# Configura la region por defecto
+# Configura la región por defecto
 gcloud config set run/region europe-west1
 ```
 
@@ -257,7 +257,7 @@ export REPO="rio-api-repo"
 export SERVICIO="rio-api"
 export IMAGEN="${REGION}-docker.pkg.dev/${PROYECTO_ID}/${REPO}/${SERVICIO}:latest"
 
-# Construye la imagen usando Cloud Build (en la nube, no en tu maquina local)
+# Construye la imagen usando Cloud Build (en la nube, no en tu máquina local)
 # Ventaja: no requiere Docker instalado localmente y usa la red de GCP
 gcloud builds submit --tag "${IMAGEN}" .
 
@@ -300,7 +300,7 @@ Descripción de cada parámetro:
 ### Paso 6: Verificar el despliegue
 
 ```bash
-# Obtiene la URL publica del servicio desplegado
+# Obtiene la URL pública del servicio desplegado
 gcloud run services describe "${SERVICIO}" \
     --region "${REGION}" \
     --format "value(status.url)"
@@ -324,18 +324,18 @@ gcloud logging read \
 Para desplegar una nueva versión de la aplicación:
 
 ```bash
-# 1. Construir y subir la nueva imagen (con tag de version recomendado)
+# 1. Construir y subir la nueva imagen (con tag de versión recomendado)
 export VERSION="v1.1.0"
 export IMAGEN_VERSION="${REGION}-docker.pkg.dev/${PROYECTO_ID}/${REPO}/${SERVICIO}:${VERSION}"
 
 gcloud builds submit --tag "${IMAGEN_VERSION}" .
 
-# 2. Desplegar la nueva version (Cloud Run crea una nueva revision automaticamente)
+# 2. Desplegar la nueva versión (Cloud Run crea una nueva revisión automáticamente)
 gcloud run deploy "${SERVICIO}" \
     --image "${IMAGEN_VERSION}" \
     --region "${REGION}"
 
-# 3. Cloud Run enruta el 100% del trafico a la nueva revision sin tiempo de inactividad
+# 3. Cloud Run enruta el 100% del tráfico a la nueva revisión sin tiempo de inactividad
 ```
 
 ---
